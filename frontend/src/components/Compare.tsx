@@ -221,7 +221,7 @@ export function SideBySide({
           supportLabel="audited support"
         />
         <RunPanel
-          title="Proposed: adaptive + verified"
+          title="Checked answer: adaptive + verified"
           pipeline="proposed"
           state={proposedState}
           tone="indigo"

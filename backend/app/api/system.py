@@ -22,12 +22,14 @@ async def config(container: Container) -> dict[str, Any]:
     settings = container.settings
     return {
         "models": {
-            "chat": settings.chat_model,
-            "embedding": settings.embedding_model,
+            "chat": settings.active_chat_model,
+            "embedding": settings.embedding_label,
             "nli": container.pipeline_config.verification.nli_model,
         },
         "llm": {"temperature": settings.llm_temperature, "seed": settings.llm_seed},
         "default_corpus": settings.default_corpus,
+        "instance_mode": settings.instance_mode,
+        "budget_mode": settings.legal_budget_mode,
         "llm_configured": container.llm_configured,
         "pipelines": [p.value for p in container.pipelines],
         "pipeline": container.pipeline_config.model_dump(mode="json"),
@@ -35,5 +37,5 @@ async def config(container: Container) -> dict[str, Any]:
 
 
 @router.get("/demo/questions")
-async def get_demo_questions() -> dict[str, Any]:
-    return demo_questions()
+async def get_demo_questions(container: Container) -> dict[str, Any]:
+    return demo_questions(container.settings.demo_questions_path)

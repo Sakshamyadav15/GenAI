@@ -55,6 +55,6 @@ async def seed_demo_corpus(container: ServiceContainer) -> int:
     return added
 
 
-def demo_questions() -> dict[str, Any]:
-    path: Path = SEED_DIR / "demo_questions.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+def demo_questions(path: Path | None = None) -> dict[str, Any]:
+    """Sample questions; ``DEMO_QUESTIONS_PATH`` points the legal instance at its own file."""
+    return json.loads((path or SEED_DIR / "demo_questions.json").read_text(encoding="utf-8"))

@@ -1,0 +1,315 @@
+{
+  "version": 1,
+  "key": "5d7a48a2ce0386c7696bea551dabca0b593e9474df8b77e558fa86050ef184f1",
+  "question": "Which freedoms are guaranteed to citizens under Article 19 of the Constitution of India?",
+  "pipeline": "baseline",
+  "corpus": "indian_acts",
+  "overrides": {},
+  "corpus_fingerprint": [
+    "6fc2598198bfe22d76513530339f19da0cd79a947904f25cf1c9a1ea380be081",
+    "819ba7adc5e5ae4063f26c82472283ba682ddb662e5a7f864cf26984d99b26ed"
+  ],
+  "recorded_at": "2026-11-05T13:23:25.380616Z",
+  "response": {
+    "query_id": "9f851770f85646e39924c02ea6b42f85",
+    "created_at": "2026-11-05T13:23:25.380616Z",
+    "pipeline": "baseline",
+    "variant": {},
+    "corpus": "indian_acts",
+    "question": "Which freedoms are guaranteed to citizens under Article 19 of the Constitution of India?",
+    "answer": "Under Article 19 of the Constitution of India, all citizens are guaranteed the following rights:\n*   Freedom of speech and expression [1].\n*   To assemble peaceably and without arms [1].\n*   To form associations, unions, or co-operative societies [1].\n*   To move freely throughout the territory of India [1].\n*   To reside and settle in any part of the territory of India [3].\n*   To practice any profession, or to carry on any occupation, trade or business [3].",
+    "citations": [
+      {
+        "number": 1,
+        "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00039",
+        "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+        "filename": "constitution_of_india.pdf",
+        "page": null,
+        "label": "Constitution of India, Article 19"
+      },
+      {
+        "number": 3,
+        "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00040",
+        "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+        "filename": "constitution_of_india.pdf",
+        "page": null,
+        "label": "Constitution of India, Article 19"
+      }
+    ],
+    "sentences": [
+      {
+        "index": 0,
+        "text": "Under Article 19 of the Constitution of India, all citizens are guaranteed the following rights:",
+        "citation_numbers": [],
+        "status": null
+      },
+      {
+        "index": 1,
+        "text": "*   Freedom of speech and expression [1].",
+        "citation_numbers": [
+          1
+        ],
+        "status": null
+      },
+      {
+        "index": 2,
+        "text": "*   To assemble peaceably and without arms [1].",
+        "citation_numbers": [
+          1
+        ],
+        "status": null
+      },
+      {
+        "index": 3,
+        "text": "*   To form associations, unions, or co-operative societies [1].",
+        "citation_numbers": [
+          1
+        ],
+        "status": null
+      },
+      {
+        "index": 4,
+        "text": "*   To move freely throughout the territory of India [1].",
+        "citation_numbers": [
+          1
+        ],
+        "status": null
+      },
+      {
+        "index": 5,
+        "text": "*   To reside and settle in any part of the territory of India [3].",
+        "citation_numbers": [
+          3
+        ],
+        "status": null
+      },
+      {
+        "index": 6,
+        "text": "*   To practice any profession, or to carry on any occupation, trade or business [3].",
+        "citation_numbers": [
+          3
+        ],
+        "status": null
+      }
+    ],
+    "invalid_citations": [],
+    "retrieval": {
+      "strategy": "fixed_top_k",
+      "k_requested": 4,
+      "k_final": 4,
+      "num_retrieved": 4,
+      "latency_ms": 130.1210000528954,
+      "embedding_latency_ms": 77.57800002582371,
+      "search_latency_ms": 52.543000027071685,
+      "queries": [
+        "Which freedoms are guaranteed to citizens under Article 19 of the Constitution of India?"
+      ],
+      "confidence": null,
+      "expansions": 0,
+      "chunks": [
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00039",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 39,
+          "text": "Constitution of India, Article 19. Protection of certain rights regarding freedom of speech, etc\n19. Protection of certain rights regarding freedom of speech, etc. — (1) All citizens shall have the right— (a) to freedom of speech and expression; (b) to assemble peaceably and without arms; (c) to form associations or unions2[or co-operative societies]; (d) to move freely throughout the territory of India; ______________________________________________ 1. Ins. by the Constitution (One Hundred and Third Amendment) Act, 2019, s. 3 (w.e.f. 14-1-2019). 2. Ins. by the Constitution (Ninety-seventh Amendment) Act, 2011, s. 2 (w.e.f. 8-2-2012).",
+          "score": 0.8120611906051636,
+          "rank": 1,
+          "citation_number": 1,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 19"
+        },
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00046",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 46,
+          "text": "Constitution of India, Article 19. Protection of certain rights regarding freedom of speech, etc\nby the State, or by a corporation owned or controlled by the State, of any trade, business, industry or service, whether to the exclusion, complete or partial, of citizens or otherwise.]",
+          "score": 0.8108723163604736,
+          "rank": 2,
+          "citation_number": 2,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 19"
+        },
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00040",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 40,
+          "text": "Constitution of India, Article 19. Protection of certain rights regarding freedom of speech, etc\nTHE CONSTITUTION OF INDIA (Part III.—Fundamental Rights) (e) to reside and settle in any part of the territory of India; 1[and] 2[(f)* * * * *] (g) to practise any profession, or to carry on any occupation, trade or business. 3[(2) Nothing in sub-clause (a) of clause (1) shall affect the operation of any existing law, or prevent the State from making any law, in so far as such law imposes reasonable restrictions on the exercise of the right conferred by the said sub-clause in the interests of 4[the sovereignty and integrity of India], the security of the State, friendly relations with foreign States, public order, decency or morality, or in relation to contempt of court, defamation or",
+          "score": 0.7841753959655762,
+          "rank": 3,
+          "citation_number": 3,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 19"
+        },
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00045",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 45,
+          "text": "Constitution of India, Article 19. Protection of certain rights regarding freedom of speech, etc\nTHE CONSTITUTION OF INDIA (Part III.—Fundamental Rights) (6) Nothing in sub-clause (g) of the said clause shall affect the operation of any existing law in so far as it imposes, or prevent the State from making any law imposing, in the interests of the general public, reasonable restrictions on the exercise of the right conferred by the said sub-clause, and, in particular, 1[nothing in the said sub-clause shall affect the operation of any existing law in so far as it relates to, or prevent the State from making any law relating to,— (i) the professional or technical qualifications necessary for practising any profession or carrying on any occupation, trade or business; or (ii) the carrying on",
+          "score": 0.7639800310134888,
+          "rank": 4,
+          "citation_number": 4,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 19"
+        }
+      ]
+    },
+    "complexity": null,
+    "verification": null,
+    "attempts": [],
+    "selected_attempt": null,
+    "refinements": [],
+    "uncertainty": null,
+    "budget": null,
+    "usage": {
+      "stages": [
+        {
+          "stage": "query_embedding",
+          "model": "local:BAAI/bge-small-en-v1.5",
+          "input_tokens": 16,
+          "output_tokens": 0,
+          "estimated": true,
+          "cost_usd": 0.0
+        },
+        {
+          "stage": "generation",
+          "model": "gemini-2.5-flash",
+          "input_tokens": 808,
+          "output_tokens": 113,
+          "estimated": false,
+          "cost_usd": 0.0
+        }
+      ],
+      "input_tokens": 824,
+      "output_tokens": 113,
+      "cost_usd": 0.0
+    },
+    "timings_ms": {
+      "retrieval": 130.1210000528954,
+      "generation": 1550.9122000075877,
+      "total": 1683.689699973911
+    },
+    "total_latency_ms": 1683.689699973911,
+    "models": {
+      "chat": "gemini-2.5-flash",
+      "embedding": "local:BAAI/bge-small-en-v1.5"
+    },
+    "config": {
+      "chunking": {
+        "chunk_size": 1000,
+        "chunk_overlap": 150
+      },
+      "baseline": {
+        "top_k": 4
+      },
+      "generation": {
+        "max_answer_tokens": 250
+      },
+      "proposed": {
+        "adaptive": false,
+        "verify": true
+      },
+      "complexity": {
+        "weights": {
+          "information_needs": 0.35,
+          "reasoning": 0.25,
+          "multi_source": 0.15,
+          "lexical": 0.15,
+          "llm_label": 0.1
+        },
+        "reasoning_scores": {
+          "lookup": 0.0,
+          "aggregation": 0.5,
+          "temporal": 0.5,
+          "comparison": 0.6,
+          "causal": 0.7,
+          "bridge": 1.0
+        },
+        "simple_max": 0.33,
+        "moderate_max": 0.66,
+        "max_tokens": 500
+      },
+      "adaptive": {
+        "k_simple": {
+          "min": 1,
+          "max": 3
+        },
+        "k_moderate": {
+          "min": 4,
+          "max": 7
+        },
+        "k_complex": {
+          "min": 8,
+          "max": 12
+        },
+        "k_cap": 15,
+        "decompose": true,
+        "max_subqueries": 4,
+        "rrf_k": 60,
+        "score_floor": 0.15,
+        "score_ceiling": 0.65,
+        "relevance_threshold": 0.4,
+        "confidence_weight_top1": 0.5,
+        "confidence_weight_mean": 0.2,
+        "confidence_weight_coverage": 0.3,
+        "confidence_threshold": 0.5,
+        "max_expansions": 1,
+        "expansion_step": 3
+      },
+      "verification": {
+        "nli_model": "cross-encoder/nli-roberta-base",
+        "window_sentences": 3,
+        "candidate_windows": 3,
+        "support_threshold": 0.75,
+        "contradiction_threshold": 0.75,
+        "partial_threshold": 0.4,
+        "use_llm_judge": false,
+        "pass_support_score": 0.9,
+        "max_claims": 6,
+        "max_retries": 0,
+        "refine_k": 3,
+        "max_tokens": 900,
+        "llm_claims": false
+      },
+      "budget": {
+        "max_cost_usd": 0.001
+      },
+      "pricing": {
+        "gpt-4o-mini": {
+          "input_per_million": 0.15,
+          "output_per_million": 0.6
+        },
+        "gpt-4o": {
+          "input_per_million": 2.5,
+          "output_per_million": 10.0
+        },
+        "gpt-4.1": {
+          "input_per_million": 2.0,
+          "output_per_million": 8.0
+        },
+        "gpt-4.1-mini": {
+          "input_per_million": 0.4,
+          "output_per_million": 1.6
+        },
+        "text-embedding-3-small": {
+          "input_per_million": 0.02,
+          "output_per_million": 0.0
+        },
+        "text-embedding-3-large": {
+          "input_per_million": 0.13,
+          "output_per_million": 0.0
+        }
+      }
+    },
+    "cached": false,
+    "cached_from": null,
+    "served_ms": null
+  }
+}

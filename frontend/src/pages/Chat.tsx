@@ -8,11 +8,21 @@ import { useRun } from '../useRun';
 
 type Mode = 'proposed' | 'baseline' | 'both';
 
+// Live questions use a much faster entailment model (about 10x quicker on CPU). Saved samples keep the default
+// configuration they were recorded with, so they still replay.
+const FAST_NLI = { verification: { nli_model: 'cross-encoder/nli-roberta-base' } };
+
+function withFastNli(overrides?: Record<string, unknown>): Record<string, unknown> {
+  const verification = { ...((overrides?.verification as Record<string, unknown>) ?? {}), ...FAST_NLI.verification };
+  return { ...(overrides ?? {}), verification };
+}
+
 export default function Chat() {
   const [question, setQuestion] = useState('');
   const [mode, setMode] = useState<Mode>('proposed');
   const [demo, setDemo] = useState<{ category: string; question: string; featured?: boolean }[]>([]);
   const [demoNote, setDemoNote] = useState<string | undefined>();
+  const [actsMode, setActsMode] = useState(false);
   const proposed = useRun();
   const baseline = useRun();
   const [audit, setAudit] = useState<AuditState>({ status: 'idle' });
@@ -21,6 +31,10 @@ export default function Chat() {
   // When true, every request of the current comparison bypasses the replay cache (the audit included).
   const forceLive = useRef(false);
   const [lastQuestion, setLastQuestion] = useState('');
+
+  useEffect(() => {
+    api.config().then((c) => setActsMode(c.instance_mode === 'legal_acts')).catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     api.demoQuestions().then((d) => { setDemo(d.questions); setDemoNote(d.selection_note); }).catch(() => undefined);
@@ -40,7 +54,7 @@ export default function Chat() {
       .query({
         question: baselineResponse.question,
         pipeline: 'proposed',
-        overrides: AUDIT_OVERRIDES,
+        overrides: baselineResponse.cached ? AUDIT_OVERRIDES : withFastNli(AUDIT_OVERRIDES),
         ...(forceLive.current ? { use_cache: false } : {}),
       })
       .then((response) => !cancelled && setAudit({ status: 'done', response }))
@@ -68,7 +82,9 @@ export default function Chat() {
     if (text.length < 3 || busy) return;
     forceLive.current = live;
     setLastQuestion(text);
-    if (mode !== 'baseline') proposed.run(text, 'proposed', undefined, !live);
+    const isSample = demo.some((d) => d.question.trim().toLowerCase() === text.toLowerCase());
+    const fast = live || !isSample ? withFastNli() : undefined;
+    if (mode !== 'baseline') proposed.run(text, 'proposed', fast, !live);
     if (mode !== 'proposed') baseline.run(text, 'baseline', undefined, !live);
   };
   const runLive = () => ask(lastQuestion, true);
@@ -79,10 +95,19 @@ export default function Chat() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Chat"
-        subtitle="Ask a question about the indexed documents. Choose Side by side to see the conventional baseline and the proposed system answer the same question."
+        title="Research"
+        subtitle="Ask a question about the authorities in your case file. Answers carry numbered citations to the passages they rely on. Choose Side by side to compare the conventional baseline with the checked answer."
       />
-      <Card title="Ask a question">
+      {actsMode && (
+        <div role="note" className="rounded-lg border border-gold-400/60 bg-gold-50 px-4 py-3 text-sm text-gold-700">
+          <strong>Indian Acts mode.</strong> Answers cite the Act and section (for example “Right to Information Act, 2005,
+          Section 7”) and come only from the Acts indexed here, not from case law. The sample questions below are
+          suggestions: those with a saved sample replay a recorded real run (tagged), and any other question is
+          answered live in a low-cost mode (verification by a local model, no retries). Check every provision against
+          the official text.
+        </div>
+      )}
+      <Card title="Research question">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -100,15 +125,15 @@ export default function Chat() {
               }
             }}
             rows={2}
-            placeholder="Ask something about the indexed documents…"
+            placeholder="State your question, for example a point of law or fact arising from the authorities in the case file…"
             className={inputBase}
           />
           <div className="flex flex-wrap items-center gap-3">
             <div className="inline-flex overflow-hidden rounded-lg border border-slate-300 bg-white text-sm" role="group" aria-label="Pipeline">
               {(
                 [
-                  ['proposed', 'Proposed'],
-                  ['baseline', 'Baseline'],
+                  ['proposed', 'Checked answer'],
+                  ['baseline', 'Baseline (unchecked)'],
                   ['both', 'Side by side'],
                 ] as [Mode, string][]
               ).map(([value, label]) => (
@@ -127,7 +152,7 @@ export default function Chat() {
               disabled={busy || question.trim().length < 3}
               className={btnPrimary}
             >
-              {busy ? 'Working…' : 'Ask'}
+              {busy ? 'Researching…' : 'Research'}
             </button>
           </div>
         </form>
@@ -162,14 +187,14 @@ export default function Chat() {
         )}
       </Card>
 
-      {!showProposed && !showBaseline && <Empty>Pick an example question above or type your own. Answers appear here with clickable citations and a colour-coded verification status.</Empty>}
+      {!showProposed && !showBaseline && <Empty>Pick a sample question above or state your own. Answers appear here with clickable citations to the authorities and a colour-coded citation check on each proposition.</Empty>}
 
       {mode === 'both' ? (
         (showProposed || showBaseline) && <SideBySide baselineState={baseline.state} proposedState={proposed.state} audit={audit} onRunLive={runLive} busy={busy} />
       ) : (
         <div className="grid gap-4">
-          {showProposed && <RunPanel title="Proposed: adaptive + verified" pipeline="proposed" state={proposed.state} tone="indigo" onRunLive={runLive} />}
-          {showBaseline && <RunPanel title="Baseline: fixed top-k RAG" pipeline="baseline" state={baseline.state} tone="gray" onRunLive={runLive} />}
+          {showProposed && <RunPanel title="Checked answer: adaptive + verified" pipeline="proposed" state={proposed.state} tone="indigo" onRunLive={runLive} />}
+          {showBaseline && <RunPanel title="Baseline: fixed top-k retrieval" pipeline="baseline" state={baseline.state} tone="gray" onRunLive={runLive} />}
         </div>
       )}
       {mode === 'both' && <CompareHistory items={history} />}

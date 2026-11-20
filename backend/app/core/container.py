@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import logging
+import threading
 from dataclasses import dataclass
 
 from langchain_core.embeddings import Embeddings
 from langchain_core.language_models import BaseChatModel
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
-from app.core.config import PipelineConfig, Settings, load_pipeline_config
+from app.core.config import FAST_NLI_MODEL, PipelineConfig, Settings, load_pipeline_config
 from app.core.llm import MISSING_KEY_MESSAGE, create_chat_model
 from app.database.session import create_engine, create_sessionmaker, init_db
 from app.embeddings.factory import create_embeddings
@@ -30,6 +31,7 @@ from app.workflows.query_service import Pipeline, QueryService
 from app.workflows.rag_graph import ProposedComponents, ProposedRAGPipeline
 
 logger = logging.getLogger(__name__)
+
 
 
 @dataclass
@@ -62,25 +64,25 @@ def build_pipelines(
 ) -> dict[PipelineName, Pipeline]:
     """Both pipelines share the dense retriever, chat model and generator (same prompt)."""
     dense = DenseRetriever(store, embeddings)
-    generator = AnswerGenerator(chat_model, settings.chat_model)
+    generator = AnswerGenerator(chat_model, settings.active_chat_model)
     proposed = ProposedRAGPipeline(
         ProposedComponents(
             dense=dense,
             adaptive=AdaptiveRetriever(dense),
-            classifier=ComplexityClassifier(chat_model, settings.chat_model),
+            classifier=ComplexityClassifier(chat_model, settings.active_chat_model),
             generator=generator,
-            extractor=ClaimExtractor(chat_model, settings.chat_model),
+            extractor=ClaimExtractor(chat_model, settings.active_chat_model),
             verifier=EvidenceVerifier(
                 nli=nli,
-                matcher=EvidenceMatcher(embeddings, settings.embedding_model),
+                matcher=EvidenceMatcher(embeddings, settings.embedding_label),
                 judge_model=chat_model,
-                judge_model_name=settings.chat_model,
+                judge_model_name=settings.active_chat_model,
             ),
-            embedding_model=settings.embedding_model,
+            embedding_model=settings.embedding_label,
         )
     )
     return {
-        PipelineName.BASELINE: BaselineRAGPipeline(dense, generator, embedding_model=settings.embedding_model),
+        PipelineName.BASELINE: BaselineRAGPipeline(dense, generator, embedding_model=settings.embedding_label),
         PipelineName.PROPOSED: proposed,
     }
 
@@ -95,6 +97,8 @@ async def build_container(
 ) -> ServiceContainer:
     """Injected components (tests) take precedence over those created from settings."""
     pipeline_config = load_pipeline_config(settings.pipeline_config_path)
+    if settings.legal_budget_mode:
+        pipeline_config = pipeline_config.with_overrides({"preset": "budget"})
     assert settings.database_url and settings.chroma_dir and settings.upload_dir and settings.demo_cache_dir  # derived
     settings.upload_dir.mkdir(parents=True, exist_ok=True)
 
@@ -104,6 +108,10 @@ async def build_container(
     store = store or ChromaVectorStore(settings.chroma_dir)
     nli = nli or NLIRegistry(device=settings.nli_device)
 
+    if settings.embedding_provider == "local":
+        embeddings = embeddings or create_embeddings(settings)  # no API key needed to index or search
+    if settings.embedding_provider == "local" and hasattr(embeddings, "warm_up"):
+        threading.Thread(target=embeddings.warm_up, name="embedding-warmup", daemon=True).start()
     if settings.llm_configured:
         chat_model = chat_model or create_chat_model(settings)
         embeddings = embeddings or create_embeddings(settings)
@@ -123,7 +131,8 @@ async def build_container(
     if chat_model is not None and embeddings is not None:
         pipelines = build_pipelines(settings=settings, store=store, chat_model=chat_model, embeddings=embeddings, nli=nli)
         if settings.preload_nli:
-            nli.preload(pipeline_config.verification.nli_model)
+            # FAST_NLI_MODEL serves live questions from the UI; load both one after the other
+            nli.preload(pipeline_config.verification.nli_model, FAST_NLI_MODEL)
 
     return ServiceContainer(
         settings=settings,
@@ -139,8 +148,8 @@ async def build_container(
             demo_cache=DemoCache(
                 settings.demo_cache_dir,
                 sessionmaker,
-                chat_model=settings.chat_model,
-                embedding_model=settings.embedding_model,
+                chat_model=settings.active_chat_model,
+                embedding_model=settings.embedding_label,
                 enabled=settings.demo_cache_enabled,
             ),
         ),

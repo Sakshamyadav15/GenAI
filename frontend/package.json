@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:legal": "vite --mode legal",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview"
   },

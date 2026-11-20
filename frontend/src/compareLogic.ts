@@ -153,9 +153,9 @@ export function scorecard(b: QueryResponse, p: QueryResponse, audit: AuditState)
       hint: 'The proposed system also analyses the question and verifies the answer, which takes time.',
     }),
     row('Tokens (input + output)', b.usage.input_tokens + b.usage.output_tokens, p.usage.input_tokens + p.usage.output_tokens, 'lower', { abs: 5, rel: 0.02 }, fmtInt),
-    claimRow('Supported claims', (c) => c.supported, 'higher'),
-    claimRow('Partially supported claims', (c) => c.partial, 'none'),
-    claimRow('Unsupported claims', (c) => c.unsupported, 'lower'),
+    claimRow('Propositions supported by authority', (c) => c.supported, 'higher'),
+    claimRow('Propositions partly supported', (c) => c.partial, 'none'),
+    claimRow('Propositions not supported', (c) => c.unsupported, 'lower'),
     row('Support score', bc?.score ?? null, pc?.score ?? null, 'higher', { abs: 0.01, rel: 0 }, fmt2, {
       hint: '(supported + ½ × partial) ÷ claims in the delivered answer. Blank when the answer makes no factual claims.',
       pendingWhenMissing: audit.status === 'running' ? true : false,

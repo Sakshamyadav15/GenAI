@@ -1,0 +1,487 @@
+% ============================================================
+% IEEE CONFERENCE PAPER — IEEEtran class, two-column
+% Title: Near-Miss Citation Verification in Indian Supreme Court
+%        Judgments via Complexity-Adaptive RAG
+% ============================================================
+\documentclass[conference]{IEEEtran}
+
+% ---------- packages ----------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{microtype}
+\usepackage{hyperref}
+\hypersetup{colorlinks=false,pdfborder={0 0 0}}
+
+% ---------- IEEE-required fix ----------
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% ============================================================
+\begin{document}
+
+\title{Near-Miss Citation Verification in Indian Supreme Court Judgments\\
+via Complexity-Adaptive RAG}
+
+\author{
+  \IEEEauthorblockN{Nishchal K J}
+  \IEEEauthorblockA{\textit{Dept. of Computer Science \& Engineering}\\
+  \textit{Ramaiah Institute of Technology}\\
+  Bangalore, India\\
+  nishchal@example.edu}
+  \and
+  \IEEEauthorblockN{Riya Acharya}
+  \IEEEauthorblockA{\textit{Dept. of Computer Science \& Engineering}\\
+  \textit{Ramaiah Institute of Technology}\\
+  Bangalore, India\\
+  riya@example.edu}
+  \and
+  \IEEEauthorblockN{Saksham Yadav}
+  \IEEEauthorblockA{\textit{Dept. of Computer Science \& Engineering}\\
+  \textit{Ramaiah Institute of Technology}\\
+  Bangalore, India\\
+  saksham@example.edu}
+  \and
+  \IEEEauthorblockN{Sangeetha V}
+  \IEEEauthorblockA{\textit{Dept. of Computer Science \& Engineering}\\
+  \textit{Ramaiah Institute of Technology}\\
+  Bangalore, India\\
+  drsangeethav@msrit.edu}
+}
+
+\maketitle
+
+% ============================================================
+\begin{abstract}
+Citation errors in legal AI go beyond non-existent cases: a cited authority may exist yet fail
+to support the proposition. We study this in Indian law and contribute three items.
+\textbf{(i)~Benchmark.} \textbf{IndiaLegalCite} comprises 286 (v0) and 432 (v1) citation-support
+items from 199 Supreme Court of India judgments (2023--2024), covering eight corruption types
+including three novel \emph{near-miss} categories and an IPC/BNS statute-transition error unique
+to Indian jurisdiction.
+\textbf{(ii)~Baselines.} Existence checks achieve only F1\,=\,0.31 on v1; local NLI reaches
+F1\,=\,0.86 but falsely flags 31\% of faithful claims and misses 48\% of over-broad holdings;
+confidence-based abstention raises accuracy to 0.99 at 20\% coverage.
+\textbf{(iii)~Adaptive RAG.} A hybrid complexity-scoring pipeline with sub-question decomposition,
+Reciprocal Rank Fusion, and NLI+LLM verification correctly modulates retrieval depth but yields
+no accuracy gain over a fixed top-5 baseline (McNemar $p=0.0625$), at 13.5$\times$ latency.
+Code and benchmark manifests are released openly.
+\end{abstract}
+
+\begin{IEEEkeywords}
+legal NLP, citation verification, retrieval-augmented generation, Indian Supreme Court,
+near-miss errors, adaptive retrieval, evidence verification, negative results
+\end{IEEEkeywords}
+
+% ============================================================
+\section{Introduction}
+\label{sec:intro}
+
+When a legal AI system cites a case, two things need to be true: the case must exist, and it must
+actually support what the system claims. Most tools only check the first part. Standard RAG
+pipelines retrieve passages by vector similarity and generate an answer; nothing checks whether the
+cited passage genuinely supports the claim~\cite{magesh2025hallucination}.
+
+Verma~\cite{verma2026citation} has studied this for US court opinions and found that wrong-case
+substitutions are caught reliably (93--100\% recall) but wrong-pinpoint errors are frequently
+missed (37--61\%). GANDR~\cite{qian2026gandr} pairs an answer-writing agent with an auditing critic
+and reports 70.8\% strict accuracy and F1 = 0.84 on 185 items. Neither study covers Indian law,
+its citation conventions, or the IPC/BNS statute replacement of July 2024.
+
+\textbf{Contributions:}
+\begin{enumerate}
+\item \textbf{IndiaLegalCite benchmark}: two versioned datasets of citation-support items from
+  Indian Supreme Court judgments, with three novel near-miss error types and an IPC/BNS
+  code-transition error specific to Indian law.
+\item \textbf{Baseline evaluation}: existence checks catch only fabricated citations; a local
+  NLI model is viable but imprecise; confidence-based abstention substantially improves reliability.
+\item \textbf{Complexity-adaptive RAG pipeline}: a continuous hybrid complexity score drives
+  retrieval depth; sub-question decomposition with RRF broadens coverage; NLI+LLM verification
+  closes the loop. We report an honest negative result: depth adaptation works, accuracy does not
+  improve, and cost is $13.5\times$ higher.
+\end{enumerate}
+
+% ============================================================
+\section{Related Work}
+\label{sec:related}
+
+Magesh et al.~\cite{magesh2025hallucination} showed that commercial legal tool hallucination-free
+claims are overstated. Verma~\cite{verma2026citation} built a citation-perturbation framework
+showing topical overlap and legal support are distinct model capabilities. GANDR~\cite{qian2026gandr}
+achieves F1 = 0.84 on legal claim auditing with a critic-augmented pipeline.
+
+For factual verification, FActScore~\cite{min2023factscore} popularised atomic-claim decomposition.
+ALCE~\cite{gao2023alce} defines NLI-based citation precision/recall; RARR~\cite{gao2023rarr} edits
+claims post-hoc when unsupported. Our verifier draws on all three, adding a \emph{quote-check}
+guard against LLM-hallucinated evidence quotes.
+
+For adaptive retrieval, Adaptive-RAG~\cite{jeong2024adaptiverag} uses a trained three-way
+classifier; Self-RAG~\cite{asai2024selfrag} learns to self-critique; CRAG~\cite{yan2024crag} adds
+a corrective retrieval phase. LegalBench-RAG~\cite{pipitone2024legalbench} benchmarks legal
+retrieval. Our approach uses a \emph{continuous} score (four sub-dimensions, smooth $k$
+interpolation) with no specialised training. InLegalNLP~\cite{paul2022inlegal} and
+Legal-BERT~\cite{chalkidis2020legalbert} provide Indian and European legal representations, but
+neither addresses citation-level support checking.
+
+% ============================================================
+\section{IndiaLegalCite Benchmark}
+\label{sec:benchmark}
+
+\textbf{Corpus.} We sampled 200 English Supreme Court of India judgments at random (seed 13;
+100 per year) from the AWS Open Data registry~\cite{indiansc2026} and downloaded 199 successfully.
+Paragraphs are split on the court's sequential numbering (84\% of judgments); blank lines for the
+rest. Mean 27.2 paragraphs per judgment. The licence is listed as CC-BY-4.0 but applicability to
+judgment texts is unconfirmed; we do not redistribute any judgment text.
+
+\textbf{Items and taxonomy.} An item is a triple: a claim, a cited authority, and a binary flag
+label. Each source proposition yields one faithful control and one or more corruptions, matched
+by source. Table~\ref{tab:composition} shows the counts. \emph{Surface-level} error types (v0 and
+v1): fabricated case, wrong paragraph, altered quote (negation/number/modal), and wrong
+code (IPC/BNS statute replacement, 1 July 2024). \emph{Near-miss} types (v1 only, designed to
+defeat topical-overlap acceptance): near paragraph (most similar other paragraph of same judgment),
+over-broad holding (condition word deleted; 75 candidates rejected by filter), and swapped
+party/outcome.
+
+\textbf{Generation and quality.} v0 used \texttt{gpt-4o-mini}; v1 used \texttt{gpt-4.1} with
+\texttt{gpt-4.1-mini} as filter. Items are rejected if the supporting quote is not verbatim in
+the source, or if the filter judges a corrupted claim still supported. Labels are automatic by
+construction (not lawyer-validated). One author read 30 stratified v1 items: none clearly
+mislabelled, 2 (7\%) borderline. The IPC/BNS mapping table is partial and unverified.
+
+\begin{table}[t]
+\centering
+\caption{IndiaLegalCite benchmark composition (dev / test, by source judgment).}
+\label{tab:composition}
+\renewcommand{\arraystretch}{1.1}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Item type} & \textbf{v0 dev} & \textbf{v0 test} & \textbf{v1 dev} & \textbf{v1 test} \\
+\midrule
+Faithful control      & 18 & 44  & 32 & 111 \\
+Fabricated case       & 15 & 35  &  8 &  42 \\
+Wrong paragraph       & 15 & 35  &  8 &  42 \\
+Near paragraph        & -- & --  &  7 &  38 \\
+Over-broad holding    & -- & --  &  8 &  23 \\
+Swapped party/outcome & -- & --  &  5 &  33 \\
+Altered quote         & 15 & 35  &  8 &  42 \\
+Wrong code (IPC/BNS)  &  4 & 20  & 13 &  12 \\
+\midrule
+\textbf{Total}        & \textbf{82} & \textbf{204} & \textbf{89} & \textbf{343} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{The Complexity-Adaptive Verification Pipeline}
+\label{sec:pipeline}
+
+The pipeline separates retrieval planning (adaptive depth) from answer auditing (evidence
+verification), implemented as a LangGraph state machine. Baseline and proposed variants share the
+same vector store (ChromaDB), embedding model (\texttt{text-embedding-3-small}), chat model
+(\texttt{gpt-4o-mini}), and generation prompt, isolating each component's effect.
+
+\textbf{Stage 1 --- Hybrid complexity scoring.}
+\begin{equation}
+S = \frac{0.35\,n_{\!needs} + 0.25\,r_{type} + 0.15\,m_{src} + 0.15\,\ell_{lex} + 0.10\,\lambda_{llm}}{\sum w_i}
+\label{eq:complexity}
+\end{equation}
+$n_{needs}\!=\!\min(N\!-\!1,3)/3$ counts distinct information needs (LLM call, temperature 0);
+$r_{type}$ maps reasoning type to $\{0, 0.5, 0.6, 0.7, 1.0\}$; $m_{src}\!\in\!\{0,1\}$ flags
+multi-source queries; $\lambda_{llm}\!\in\!\{0, 0.5, 1.0\}$ is the LLM's own complexity label;
+and
+\begin{align}
+\ell_{lex} &= 0.35\cdot\mathbf{1}[\text{cmp}] + 0.25\cdot\min\!\left(\tfrac{\text{enum}}{2},1\right) \notag\\
+           &\quad + 0.25\cdot\min\!\left(\tfrac{\text{nest}}{3},1\right) + 0.15\cdot\min\!\left(\tfrac{|\text{ent}|-1}{3},1\right)
+\label{eq:lexical}
+\end{align}
+is a purely deterministic lexical feature (no LLM call). $S$ is mapped to retrieval depth $k$ by
+continuous interpolation: simple $k\!\in\![1,3]$, moderate $k\!\in\![4,7]$, complex $k\!\in\![8,12]$.
+
+\textbf{Stage 2 --- Sub-question decomposition and RRF.}
+When $N\!\geq\!2$, the system retrieves separately for the original query and up to four
+sub-questions, then merges with Reciprocal Rank Fusion:
+\begin{equation}
+  \text{RRF}(d) = \textstyle\sum_{q \in Q} \frac{1}{60 + \text{rank}(d,\,q)}
+  \label{eq:rrf}
+\end{equation}
+A coverage guarantee ensures the top chunk of each sub-query is included before filling by RRF
+order, preventing bridge-hop chunks from being crowded out.
+
+\textbf{Stage 3 --- Confidence and bounded expansion.}
+\begin{equation}
+  C = 0.5\,\tilde{s}_1 + 0.2\,\overline{\tilde{s}} + 0.3\,\text{cov}
+  \label{eq:confidence}
+\end{equation}
+where $\tilde{s}_i$ normalises cosine scores and $\text{cov}$ is the fraction of sub-queries
+covered. If $C < 0.5$ and budget remains, $k$ expands by 3 (capped at 15) for uncovered
+sub-queries only.
+
+\textbf{Stage 4 --- Evidence verification.}
+Answers are split into atomic claims by an LLM call. Each claim is matched to 3-sentence evidence
+windows by cosine similarity, then adjudicated by \texttt{cross-encoder/nli-roberta-base}:
+\begin{align}
+&\text{entail}(w,c)\geq 0.75 \Rightarrow \textsc{supported} \notag \\
+&\text{contra}(w,c)\geq 0.75 \wedge \text{entail}<0.40 \Rightarrow \textsc{unsupported} \notag \\
+&\text{otherwise} \Rightarrow \textsc{ambiguous} \to \text{LLM judge}
+\label{eq:nli}
+\end{align}
+Ambiguous claims escalate to an LLM judge with a quote-check guard ($\geq$85\% fuzzy match).
+Unsupported claims trigger bounded re-retrieval (max 2 retries); if still unsupported, an
+explicit uncertainty notice replaces the claim.
+
+% ============================================================
+\section{Results}
+\label{sec:experiments}
+
+\textbf{Setup.} Items split 30/70 dev/test by source judgment (seed 13). B2 threshold tuned on
+dev only (0.9 on v0; 0.7 on v1). Metrics: precision, recall, F1, false-flag (FF) rate on
+faithful controls---all with 95\% bootstrap CIs (2,000 resamples). For MuSiQue: 36 questions
+(12 per group) from the v1.0 dev set; corpus = 954 paragraphs; correctness judged by GPT-4.1
+against gold; comparisons use paired bootstrap and McNemar tests (10,000 resamples).
+
+\subsection{Legal Benchmark: Overall Detection}
+
+Table~\ref{tab:overall} shows overall detection results. B0 (existence check) catches only
+fabricated citations (F1 = 0.36 on v0, 0.31 on v1) and misses everything else. B1 (LLM-only,
+\texttt{gpt-4o-mini}) reached F1 = 0.99 on v0---confirming v0 alone is too easy. B2 (local NLI)
+dropped from F1 = 0.96 on v0 to 0.86 on v1, reflecting the additional difficulty of near-miss
+types in v1 rather than a controlled regression.
+
+\begin{table}[t]
+\centering
+\caption{Overall detection on the test split. 95\% bootstrap CIs (2,000 resamples).
+         B1 evaluated on v0 only.}
+\label{tab:overall}
+\renewcommand{\arraystretch}{1.1}
+\footnotesize
+\begin{tabular}{@{}lllll@{}}
+\toprule
+\textbf{System} & \textbf{Prec.} & \textbf{Recall} & \textbf{F1} & \textbf{FF\%} \\
+\midrule
+\multicolumn{5}{l}{\textit{v0 (n=204)}} \\
+B0 Existence  & 1.00 & 0.22 [.15,.29] & 0.36 [.27,.45] & 0.00 \\
+B1 LLM        & 1.00 & 0.98 [.96,1.0] & 0.99 [.98,1.0] & 0.00 \\
+B2 Local NLI  & 0.93 [.90,.97] & 0.99 [.97,1.0] & 0.96 [.94,.98] & 25\% \\
+R  Date rule  & 1.00 & 0.12 [.08,.18] & 0.22 [.14,.30] & 0.00 \\
+\midrule
+\multicolumn{5}{l}{\textit{v1 (n=343)}} \\
+B0 Existence  & 1.00 & 0.18 [.13,.23] & 0.31 [.24,.38] & 0.00 \\
+B2 Local NLI  & 0.86 [.81,.90] & 0.87 [.82,.91] & 0.86 [.83,.89] & 31\% \\
+R  Date rule  & 1.00 & 0.05 [.03,.08] & 0.10 [.05,.15] & 0.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Per-Type Analysis and Abstention}
+
+Table~\ref{tab:pertype} shows per-type recall on v1. B2 handles blunt errors well (fabricated
+case: 1.00; wrong paragraph: 0.98; wrong code: 1.00) but drops for near-miss types---especially
+over-broad holdings (0.52 [0.30, 0.73]). This is expected: NLI is trained to accept general
+claims entailed by their strict counterparts, but in law, omitting a qualifying condition is an
+error, not a valid paraphrase.
+
+The NLI baseline falsely flags 31\% of faithful controls (34/111). \textbf{Abstention helps.}
+Reporting only on the most confident 20\% of items achieves 0.99 accuracy (AURC = 0.083),
+falling to 0.93 at 40\% and 0.81 at full coverage.
+
+\begin{table}[t]
+\centering
+\caption{Per-type recall on v1 (test split). 95\% bootstrap CIs.}
+\label{tab:pertype}
+\renewcommand{\arraystretch}{1.1}
+\footnotesize
+\begin{tabular}{@{}lrll@{}}
+\toprule
+\textbf{Type} & \textbf{n} & \textbf{B0} & \textbf{B2 Local NLI} \\
+\midrule
+Fabricated case       & 42 & 1.00 & 1.00 [1.00, 1.00] \\
+Wrong paragraph       & 42 & 0.00 & 0.98 [0.92, 1.00] \\
+Near paragraph        & 38 & 0.00 & 0.92 [0.83, 1.00] \\
+Altered quote         & 42 & 0.00 & 0.81 [0.69, 0.92] \\
+Swapped party/outcome & 33 & 0.00 & 0.76 [0.60, 0.91] \\
+Over-broad holding    & 23 & 0.00 & 0.52 [0.30, 0.73] \\
+Wrong code (IPC/BNS)  & 12 & 0.00 & 1.00 [1.00, 1.00] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{MuSiQue: Adaptive Pipeline (Negative Result)}
+\label{sec:negative}
+
+Table~\ref{tab:musique} reports the ablation. The adaptive pipeline sets retrieval depth sensibly:
+mean chunks are 1.9 / 5.1 / 8.2 for simple, moderate, and complex questions vs.\ a flat 5.0 from
+the baseline; classifier-hop agreement is 64\%. However, better depth did not give better answers.
+Fixed top-5 scored 0.583 correctness; A+V scored 0.444 (McNemar $p = 0.0625$, 5 vs.\ 0
+discordant pairs). No variant beat the baseline on any metric. The likely reason: 954 paragraphs
+(${\approx}20$ per question) is too small to discriminate retrieval policies; verification overhead
+remains constant regardless. A larger corpus is needed.
+
+\begin{table}[t]
+\centering
+\caption{MuSiQue ablation --- 36 questions (12 simple / moderate / complex).
+         Mean [95\% CI]. McNemar $p$ vs.\ baseline B.}
+\label{tab:musique}
+\renewcommand{\arraystretch}{1.15}
+\footnotesize
+\begin{tabular}{@{}lp{1.9cm}p{1.9cm}rr@{}}
+\toprule
+\textbf{Variant} & \textbf{Correct} & \textbf{Recall@k} & \textbf{Lat.} & \textbf{McNem.} \\
+\midrule
+B~~Fixed top-5   & 0.583 [.417,.750] & 0.731 [.632,.829] & 1.6s  & ---  \\
+A~~Adaptive      & 0.444 [.278,.611] & 0.662 [.549,.771] & 3.0s  & .0625\\
+A$^-$ No decomp  & 0.444 [.278,.611] & 0.606 [.484,.722] & 2.8s  & .0625\\
+V~~Verify only   & 0.500 [.333,.667] & 0.745 [.644,.843] & 10.4s & .2500\\
+A+V Both         & 0.444 [.278,.611] & 0.699 [.588,.801] & 21.9s & .0625\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Comparison with the Base Paper (Verma 2026)}
+
+Table~\ref{tab:comparison} summarises how this work differs from Verma~\cite{verma2026citation}.
+The key gaps we fill: (a) Indian jurisdiction with its unique IPC/BNS transition error; (b) seven
+error types including three near-miss categories absent from prior work; (c) a local NLI verifier
+requiring no API access; and (d) abstention analysis (AURC = 0.083). No direct numerical
+comparison is made---the corpora, verifiers, and jurisdictions differ too much.
+
+\begin{table}[t]
+\centering
+\caption{Comparison with Verma~\cite{verma2026citation} (base paper).}
+\label{tab:comparison}
+\renewcommand{\arraystretch}{1.1}
+\footnotesize
+\begin{tabular}{@{}p{1.3cm}p{2.7cm}p{2.7cm}@{}}
+\toprule
+\textbf{Aspect} & \textbf{Verma (2026)} & \textbf{This work} \\
+\midrule
+Corpus       & US opinions \& briefs     & 199 India SC judgments \\
+Error types  & 2 (wrong case, pinpoint)  & 7; incl.\ 3 near-miss; IPC/BNS \\
+Verifiers    & 14 LLM configs            & Local NLI, exist.\ check, date rule \\
+Abstention   & Not addressed             & Risk-coverage; AURC = 0.083 \\
+Best F1      & ${\sim}0.90$              & 0.99 (v0, LLM); 0.86 (v1, NLI) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Discussion, Limitations, and Conclusion}
+\label{sec:discussion}
+
+\textbf{Why NLI fails on over-broad holdings.} NLI models trained on SNLI/MNLI assign high
+entailment when a strict rule (``X only if Z'') appears to imply its generalisation (``X''). In
+law, however, omitting the condition is an error, not a paraphrase. This is a fundamental
+mismatch between legal citation support and the NLI training objective, not an implementation bug.
+Legal-specific entailment objectives or ruling-aware classification heads are needed.
+
+\textbf{Practical takeaways.}
+(1)~Existence checks miss at least 69\% of citation errors---they are not sufficient for any real
+legal AI deployment.
+(2)~Confident abstention (top 20\%) achieves 0.99 accuracy with a fully local NLI model, making it
+a practical strategy for high-stakes queries.
+(3)~Adaptive retrieval only pays off on large, noisy corpora where retrieval is the actual
+bottleneck. On small corpora, the depth-adaptation overhead dominates.
+(4)~Over-broad holdings and swapped outcomes require capabilities beyond vanilla NLI---legal
+semantic entailment and coreference tracking are open research problems.
+
+\textbf{Limitations.} All items are LLM-generated; no lawyer has validated labels. We cover one
+court, two years, 199 judgments, English only. The IPC/BNS mapping table is partial and unverified
+against the official Gazette. MuSiQue uses only 36 questions on a small corpus with automatic
+evaluation; both pipeline and judge are OpenAI-family and may share blind spots. Judgment texts are
+not released; licence for redistribution is unconfirmed. This is a research prototype---not for
+legal advice.
+
+\textbf{Conclusion.} We presented \textbf{IndiaLegalCite}, a versioned citation-support benchmark
+for Indian Supreme Court judgments with seven corruption types (three novel near-miss, one
+IPC/BNS transition). Key findings: existence checks catch only fabricated citations; local NLI
+reaches F1 = 0.86 on v1 but with high false-flag rate on over-broad holdings; abstention lifts
+accuracy to 0.99 at 20\% coverage; and the adaptive RAG pipeline correctly modulates depth but
+provides no accuracy gain at $6$--$14\times$ latency cost. Next steps: LLM checker on v1,
+lawyer-validated labels, High Court data, and a larger MuSiQue corpus. Code and results at
+\url{https://github.com/[repository]}.
+
+% ============================================================
+% REFERENCES
+% ============================================================
+\begin{thebibliography}{99}
+
+\bibitem{magesh2025hallucination}
+V.~Magesh et al.,
+``Hallucination-free? Assessing the reliability of leading AI legal research tools,''
+\textit{J. Empirical Legal Studies}, 2025; arXiv:2405.20362.
+
+\bibitem{verma2026citation}
+A.~Verma,
+``Is this citation on point?''
+arXiv:2608.12571, 2026.
+
+\bibitem{qian2026gandr}
+C.~Qian et al.,
+``GANDR: Claim auditing for verifiable legal answer generation,''
+arXiv:2609.10293, 2026.
+
+\bibitem{jeong2024adaptiverag}
+S.~Jeong et al.,
+``Adaptive-RAG: Learning to adapt retrieval-augmented LLMs through question complexity,''
+in \textit{Proc. NAACL}, 2024; arXiv:2403.14403.
+
+\bibitem{asai2024selfrag}
+A.~Asai et al.,
+``Self-RAG: Learning to retrieve, generate, and critique through self-reflection,''
+in \textit{Proc. ICLR}, 2024; arXiv:2310.11511.
+
+\bibitem{yan2024crag}
+S.-Q. Yan et al.,
+``CRAG: Corrective retrieval augmented generation,''
+arXiv:2401.15884, 2024.
+
+\bibitem{min2023factscore}
+S.~Min et al.,
+``FActScore: Fine-grained atomic evaluation of factual precision in long form text generation,''
+in \textit{Proc. EMNLP}, 2023; arXiv:2305.14251.
+
+\bibitem{gao2023alce}
+T.~Gao et al.,
+``Enabling large language models to generate text with citations,''
+in \textit{Proc. EMNLP}, 2023; arXiv:2305.14627.
+
+\bibitem{gao2023rarr}
+T.~Gao, A.~Fabbri, and C.~Manning,
+``RARR: Researching and revising what language models say, using language models,''
+in \textit{Proc. ACL}, 2023; arXiv:2210.08726.
+
+\bibitem{pipitone2024legalbench}
+N.~Pipitone and G.~H. Alami,
+``LegalBench-RAG: A benchmark for retrieval-augmented generation in the legal domain,''
+arXiv:2408.10343, 2024.
+
+\bibitem{trivedi2022musique}
+H.~Trivedi et al.,
+``MuSiQue: Multihop questions via single-hop question composition,''
+\textit{Trans. Assoc. Comput. Linguistics}, 2022.
+
+\bibitem{indiansc2026}
+``Indian Supreme Court Judgments,''
+AWS Open Data registry (Dattam Labs). [Online]. Available:
+\url{https://registry.opendata.aws/indian-supreme-court-judgments/}
+
+\bibitem{paul2022inlegal}
+S.~Paul et al.,
+``Pre-training transformers on Indian legal text,''
+in \textit{Proc. JURIX}, 2022; arXiv:2209.06049.
+
+\bibitem{chalkidis2020legalbert}
+I.~Chalkidis et al.,
+``LEGAL-BERT: The muppets straight out of law school,''
+in \textit{Findings of EMNLP}, 2020; arXiv:2010.02559.
+
+\end{thebibliography}
+
+\end{document}

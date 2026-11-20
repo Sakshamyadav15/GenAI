@@ -1,0 +1,1390 @@
+{
+ "created_at": "2026-11-04T06:10:59.911428+00:00",
+ "benchmark": "experiments/legal_india/bench_v1.jsonl",
+ "n_items": 432,
+ "checkers": {
+  "nli": "cross-encoder/nli-roberta-base"
+ },
+ "skipped": {
+  "B1b_gpt41": "skipped for cost: the OpenAI budget was withdrawn; its decisions were never saved",
+  "B1_gpt4o_mini": "not run on v1: the OpenAI project reached its spend limit (HTTP 429)"
+ },
+ "b2_threshold_tuned_on_dev": 0.7,
+ "usage_checkers": {
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "cost_usd": 0.0
+ },
+ "systems": {
+  "B0_existence_only": {
+   "test": {
+    "split": "test",
+    "overall": {
+     "n": 343,
+     "precision": {
+      "value": 1.0,
+      "ci95": [
+       1.0,
+       1.0
+      ]
+     },
+     "recall": {
+      "value": 0.181,
+      "ci95": [
+       0.1333,
+       0.2326
+      ]
+     },
+     "f1": {
+      "value": 0.3066,
+      "ci95": [
+       0.2353,
+       0.3774
+      ]
+     },
+     "false_flag_rate": {
+      "value": 0.0,
+      "ci95": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "per_type": {
+     "fabricated_case": {
+      "n": 147,
+      "precision": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "recall": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "n_type": 42,
+      "n_controls": 105
+     },
+     "wrong_paragraph": {
+      "n": 147,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 42,
+      "n_controls": 105
+     },
+     "wrong_code": {
+      "n": 18,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 12,
+      "n_controls": 6
+     },
+     "altered_quote": {
+      "n": 147,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 42,
+      "n_controls": 105
+     },
+     "near_paragraph": {
+      "n": 143,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 38,
+      "n_controls": 105
+     },
+     "overbroad_holding": {
+      "n": 128,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 23,
+      "n_controls": 105
+     },
+     "swapped_party_or_outcome": {
+      "n": 138,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 33,
+      "n_controls": 105
+     }
+    }
+   },
+   "dev": {
+    "split": "dev",
+    "overall": {
+     "n": 89,
+     "precision": {
+      "value": 1.0,
+      "ci95": [
+       1.0,
+       1.0
+      ]
+     },
+     "recall": {
+      "value": 0.1404,
+      "ci95": [
+       0.0566,
+       0.2364
+      ]
+     },
+     "f1": {
+      "value": 0.2462,
+      "ci95": [
+       0.1071,
+       0.3824
+      ]
+     },
+     "false_flag_rate": {
+      "value": 0.0,
+      "ci95": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "per_type": {
+     "fabricated_case": {
+      "n": 31,
+      "precision": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "recall": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "n_type": 8,
+      "n_controls": 23
+     },
+     "wrong_paragraph": {
+      "n": 31,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 8,
+      "n_controls": 23
+     },
+     "wrong_code": {
+      "n": 22,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 13,
+      "n_controls": 9
+     },
+     "altered_quote": {
+      "n": 31,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 8,
+      "n_controls": 23
+     },
+     "near_paragraph": {
+      "n": 30,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 7,
+      "n_controls": 23
+     },
+     "overbroad_holding": {
+      "n": 31,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 8,
+      "n_controls": 23
+     },
+     "swapped_party_or_outcome": {
+      "n": 28,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 5,
+      "n_controls": 23
+     }
+    }
+   }
+  },
+  "B2_nli_only": {
+   "test": {
+    "split": "test",
+    "overall": {
+     "n": 343,
+     "precision": {
+      "value": 0.8553,
+      "ci95": [
+       0.8072,
+       0.8987
+      ]
+     },
+     "recall": {
+      "value": 0.8664,
+      "ci95": [
+       0.821,
+       0.9078
+      ]
+     },
+     "f1": {
+      "value": 0.8608,
+      "ci95": [
+       0.8254,
+       0.8921
+      ]
+     },
+     "false_flag_rate": {
+      "value": 0.3063,
+      "ci95": [
+       0.2195,
+       0.3934
+      ]
+     }
+    },
+    "per_type": {
+     "fabricated_case": {
+      "n": 147,
+      "precision": {
+       "value": 0.5526,
+       "ci95": [
+        0.44,
+        0.6618
+       ]
+      },
+      "recall": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 0.7119,
+       "ci95": [
+        0.6111,
+        0.7965
+       ]
+      },
+      "n_type": 42,
+      "n_controls": 105
+     },
+     "wrong_paragraph": {
+      "n": 147,
+      "precision": {
+       "value": 0.5467,
+       "ci95": [
+        0.4328,
+        0.6571
+       ]
+      },
+      "recall": {
+       "value": 0.9762,
+       "ci95": [
+        0.9211,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 0.7009,
+       "ci95": [
+        0.6,
+        0.789
+       ]
+      },
+      "n_type": 42,
+      "n_controls": 105
+     },
+     "wrong_code": {
+      "n": 18,
+      "precision": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "recall": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "n_type": 12,
+      "n_controls": 6
+     },
+     "altered_quote": {
+      "n": 147,
+      "precision": {
+       "value": 0.5,
+       "ci95": [
+        0.3833,
+        0.6154
+       ]
+      },
+      "recall": {
+       "value": 0.8095,
+       "ci95": [
+        0.6905,
+        0.9211
+       ]
+      },
+      "f1": {
+       "value": 0.6182,
+       "ci95": [
+        0.5047,
+        0.7167
+       ]
+      },
+      "n_type": 42,
+      "n_controls": 105
+     },
+     "near_paragraph": {
+      "n": 143,
+      "precision": {
+       "value": 0.5072,
+       "ci95": [
+        0.3889,
+        0.625
+       ]
+      },
+      "recall": {
+       "value": 0.9211,
+       "ci95": [
+        0.8261,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 0.6542,
+       "ci95": [
+        0.5417,
+        0.7523
+       ]
+      },
+      "n_type": 38,
+      "n_controls": 105
+     },
+     "overbroad_holding": {
+      "n": 128,
+      "precision": {
+       "value": 0.2609,
+       "ci95": [
+        0.1364,
+        0.3878
+       ]
+      },
+      "recall": {
+       "value": 0.5217,
+       "ci95": [
+        0.3043,
+        0.7273
+       ]
+      },
+      "f1": {
+       "value": 0.3478,
+       "ci95": [
+        0.1905,
+        0.48
+       ]
+      },
+      "n_type": 23,
+      "n_controls": 105
+     },
+     "swapped_party_or_outcome": {
+      "n": 138,
+      "precision": {
+       "value": 0.4237,
+       "ci95": [
+        0.2982,
+        0.5517
+       ]
+      },
+      "recall": {
+       "value": 0.7576,
+       "ci95": [
+        0.6,
+        0.9062
+       ]
+      },
+      "f1": {
+       "value": 0.5435,
+       "ci95": [
+        0.4103,
+        0.6612
+       ]
+      },
+      "n_type": 33,
+      "n_controls": 105
+     }
+    }
+   },
+   "dev": {
+    "split": "dev",
+    "overall": {
+     "n": 89,
+     "precision": {
+      "value": 0.7879,
+      "ci95": [
+       0.6866,
+       0.8824
+      ]
+     },
+     "recall": {
+      "value": 0.9123,
+      "ci95": [
+       0.8333,
+       0.9815
+      ]
+     },
+     "f1": {
+      "value": 0.8455,
+      "ci95": [
+       0.7731,
+       0.9091
+      ]
+     },
+     "false_flag_rate": {
+      "value": 0.4375,
+      "ci95": [
+       0.2667,
+       0.6111
+      ]
+     }
+    },
+    "per_type": {
+     "fabricated_case": {
+      "n": 31,
+      "precision": {
+       "value": 0.3636,
+       "ci95": [
+        0.1765,
+        0.5556
+       ]
+      },
+      "recall": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 0.5333,
+       "ci95": [
+        0.3,
+        0.7143
+       ]
+      },
+      "n_type": 8,
+      "n_controls": 23
+     },
+     "wrong_paragraph": {
+      "n": 31,
+      "precision": {
+       "value": 0.3333,
+       "ci95": [
+        0.15,
+        0.5263
+       ]
+      },
+      "recall": {
+       "value": 0.875,
+       "ci95": [
+        0.6,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 0.4828,
+       "ci95": [
+        0.25,
+        0.6667
+       ]
+      },
+      "n_type": 8,
+      "n_controls": 23
+     },
+     "wrong_code": {
+      "n": 22,
+      "precision": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "recall": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "n_type": 13,
+      "n_controls": 9
+     },
+     "altered_quote": {
+      "n": 31,
+      "precision": {
+       "value": 0.3636,
+       "ci95": [
+        0.1765,
+        0.5556
+       ]
+      },
+      "recall": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 0.5333,
+       "ci95": [
+        0.3,
+        0.7143
+       ]
+      },
+      "n_type": 8,
+      "n_controls": 23
+     },
+     "near_paragraph": {
+      "n": 30,
+      "precision": {
+       "value": 0.3333,
+       "ci95": [
+        0.1429,
+        0.5294
+       ]
+      },
+      "recall": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 0.5,
+       "ci95": [
+        0.25,
+        0.6923
+       ]
+      },
+      "n_type": 7,
+      "n_controls": 23
+     },
+     "overbroad_holding": {
+      "n": 31,
+      "precision": {
+       "value": 0.3,
+       "ci95": [
+        0.1111,
+        0.5
+       ]
+      },
+      "recall": {
+       "value": 0.75,
+       "ci95": [
+        0.4,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 0.4286,
+       "ci95": [
+        0.1818,
+        0.6316
+       ]
+      },
+      "n_type": 8,
+      "n_controls": 23
+     },
+     "swapped_party_or_outcome": {
+      "n": 28,
+      "precision": {
+       "value": 0.1765,
+       "ci95": [
+        0.0,
+        0.3684
+       ]
+      },
+      "recall": {
+       "value": 0.6,
+       "ci95": [
+        0.0,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 0.2727,
+       "ci95": [
+        0.0,
+        0.5
+       ]
+      },
+      "n_type": 5,
+      "n_controls": 23
+     }
+    }
+   }
+  },
+  "R_wrong_code_rule_m1": {
+   "test": {
+    "split": "test",
+    "overall": {
+     "n": 343,
+     "precision": {
+      "value": 1.0,
+      "ci95": [
+       1.0,
+       1.0
+      ]
+     },
+     "recall": {
+      "value": 0.0517,
+      "ci95": [
+       0.0251,
+       0.0812
+      ]
+     },
+     "f1": {
+      "value": 0.0984,
+      "ci95": [
+       0.049,
+       0.1502
+      ]
+     },
+     "false_flag_rate": {
+      "value": 0.0,
+      "ci95": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "per_type": {
+     "fabricated_case": {
+      "n": 147,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 42,
+      "n_controls": 105
+     },
+     "wrong_paragraph": {
+      "n": 147,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 42,
+      "n_controls": 105
+     },
+     "wrong_code": {
+      "n": 18,
+      "precision": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "recall": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "n_type": 12,
+      "n_controls": 6
+     },
+     "altered_quote": {
+      "n": 147,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 42,
+      "n_controls": 105
+     },
+     "near_paragraph": {
+      "n": 143,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 38,
+      "n_controls": 105
+     },
+     "overbroad_holding": {
+      "n": 128,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 23,
+      "n_controls": 105
+     },
+     "swapped_party_or_outcome": {
+      "n": 138,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 33,
+      "n_controls": 105
+     }
+    }
+   },
+   "dev": {
+    "split": "dev",
+    "overall": {
+     "n": 89,
+     "precision": {
+      "value": 1.0,
+      "ci95": [
+       1.0,
+       1.0
+      ]
+     },
+     "recall": {
+      "value": 0.2281,
+      "ci95": [
+       0.125,
+       0.3448
+      ]
+     },
+     "f1": {
+      "value": 0.3714,
+      "ci95": [
+       0.2222,
+       0.5128
+      ]
+     },
+     "false_flag_rate": {
+      "value": 0.0,
+      "ci95": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "per_type": {
+     "fabricated_case": {
+      "n": 31,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 8,
+      "n_controls": 23
+     },
+     "wrong_paragraph": {
+      "n": 31,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 8,
+      "n_controls": 23
+     },
+     "wrong_code": {
+      "n": 22,
+      "precision": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "recall": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "f1": {
+       "value": 1.0,
+       "ci95": [
+        1.0,
+        1.0
+       ]
+      },
+      "n_type": 13,
+      "n_controls": 9
+     },
+     "altered_quote": {
+      "n": 31,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 8,
+      "n_controls": 23
+     },
+     "near_paragraph": {
+      "n": 30,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 7,
+      "n_controls": 23
+     },
+     "overbroad_holding": {
+      "n": 31,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 8,
+      "n_controls": 23
+     },
+     "swapped_party_or_outcome": {
+      "n": 28,
+      "precision": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "recall": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "f1": {
+       "value": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "n_type": 5,
+      "n_controls": 23
+     }
+    }
+   }
+  }
+ },
+ "calibration_risk_coverage_test": {
+  "B2_nli_only": {
+   "n": 343,
+   "coverage": [
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    1.0
+   ],
+   "accuracy": [
+    0.9855,
+    0.9343,
+    0.8835,
+    0.8686,
+    0.8105
+   ],
+   "aurc": 0.0828
+  }
+ },
+ "v0_reference_overall_f1_test": {
+  "B0_existence_only": {
+   "value": 0.359,
+   "ci95": [
+    0.266,
+    0.4456
+   ]
+  },
+  "B1_llm_only": {
+   "value": 0.9905,
+   "ci95": [
+    0.9778,
+    1.0
+   ]
+  },
+  "B2_nli_only": {
+   "value": 0.9605,
+   "ci95": [
+    0.9385,
+    0.9798
+   ]
+  },
+  "R_wrong_code_rule_m1": {
+   "value": 0.2222,
+   "ci95": [
+    0.142,
+    0.303
+   ]
+  }
+ },
+ "notes": [
+  "Items are LLM-generated (gpt-4.1) from judgments; labels are automatic by construction and not validated by lawyers.",
+  "Thresholds are tuned on the dev split only; reported numbers are on the test split.",
+  "B1/B1b confidences are verbalised by the model and are not calibrated probabilities.",
+  "R is a rule check for wrong_code only, shown for reference; it is not a general baseline."
+ ]
+}

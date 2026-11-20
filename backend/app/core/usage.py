@@ -19,6 +19,9 @@ from app.schemas.query import StageUsage, UsageSummary
 
 logger = logging.getLogger(__name__)
 
+# Models that run on this machine ("local:") and Gemini models used on the free tier have no API cost.
+FREE_MODEL_PREFIXES = ("local:", "gemini")
+
 
 @lru_cache(maxsize=1)
 def _encoding():  # type: ignore[no-untyped-def]
@@ -68,10 +71,16 @@ class UsageTracker:
         self.records.append(UsageRecord(stage, model, tokens, 0, True))
 
     def _cost(self, record: UsageRecord) -> float | None:
+        if record.model.startswith(FREE_MODEL_PREFIXES):
+            return 0.0  # local models and the Gemini free tier cost nothing
         price = self.pricing.get(record.model)
         if price is None:
             return None
         return (record.input_tokens * price.input_per_million + record.output_tokens * price.output_per_million) / 1e6
+
+    def spent_usd(self) -> float:
+        """Cost of the recorded calls so far; calls of unpriced models count as zero."""
+        return sum(c for c in (self._cost(r) for r in self.records) if c is not None)
 
     def summary(self) -> UsageSummary:
         stages = [

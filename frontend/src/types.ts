@@ -19,6 +19,7 @@ export interface RetrievedChunk {
   rank: number;
   citation_number: number;
   retrieved_by: string;
+  section_label?: string | null;
 }
 
 export interface RetrievalConfidence {
@@ -64,6 +65,7 @@ export interface EvidenceSpan {
   chunk_id: string;
   filename: string;
   page: number | null;
+  section_label?: string | null;
   text: string;
   similarity: number;
   entailment: number;
@@ -152,6 +154,7 @@ export interface Citation {
   doc_id: string;
   filename: string;
   page: number | null;
+  label?: string | null;
 }
 
 export interface QueryResponse {

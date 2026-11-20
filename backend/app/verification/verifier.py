@@ -90,6 +90,7 @@ def _span(scored: _Scored) -> EvidenceSpan:
         chunk_id=chunk.chunk_id,
         filename=chunk.filename,
         page=chunk.page,
+        section_label=chunk.section_label,
         text=scored.window.text,
         similarity=round(scored.window.similarity, 4),
         entailment=round(scored.nli.entailment, 4),

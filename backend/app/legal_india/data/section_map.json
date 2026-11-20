@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "description": "Small, partial correspondence table between the repealed and the new Indian criminal codes (IPC->BNS, CrPC->BNSS, Evidence Act->BSA).",
+    "warning": "NOT COMPLETE AND NOT VERIFIED. Every entry is unverified and must be checked against the official Gazette / India Code text before research use. Sections were split, merged and renumbered, so one-to-one correspondence is not guaranteed; sub-section numbers in `new` are given where the main punishment clause is meant.",
+    "in_force_from": "2024-07-01"
+  },
+  "mappings": [
+    {"old_code": "IPC", "old": "34",   "new_code": "BNS", "new": "3(5)",   "title": "Acts done by several persons in furtherance of common intention", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "120B", "new_code": "BNS", "new": "61(2)",  "title": "Punishment of criminal conspiracy", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "299",  "new_code": "BNS", "new": "100",    "title": "Culpable homicide", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "300",  "new_code": "BNS", "new": "101",    "title": "Murder", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "302",  "new_code": "BNS", "new": "103(1)", "title": "Punishment for murder", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette). BNS 103(2) is a new provision with no IPC counterpart."},
+    {"old_code": "IPC", "old": "304",  "new_code": "BNS", "new": "105",    "title": "Punishment for culpable homicide not amounting to murder", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "304A", "new_code": "BNS", "new": "106(1)", "title": "Causing death by negligence", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "304B", "new_code": "BNS", "new": "80",     "title": "Dowry death", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "306",  "new_code": "BNS", "new": "108",    "title": "Abetment of suicide", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "307",  "new_code": "BNS", "new": "109",    "title": "Attempt to murder", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "323",  "new_code": "BNS", "new": "115(2)", "title": "Punishment for voluntarily causing hurt", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "354",  "new_code": "BNS", "new": "74",     "title": "Assault or criminal force to a woman with intent to outrage her modesty", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "376",  "new_code": "BNS", "new": "64(1)",  "title": "Punishment for rape", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "379",  "new_code": "BNS", "new": "303(2)", "title": "Punishment for theft", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "392",  "new_code": "BNS", "new": "309",    "title": "Robbery", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "406",  "new_code": "BNS", "new": "316(2)", "title": "Punishment for criminal breach of trust", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "420",  "new_code": "BNS", "new": "318(4)", "title": "Cheating and dishonestly inducing delivery of property", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "498A", "new_code": "BNS", "new": "85",     "title": "Husband or relative subjecting a woman to cruelty", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "499",  "new_code": "BNS", "new": "356(1)", "title": "Defamation", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+    {"old_code": "IPC", "old": "509",  "new_code": "BNS", "new": "79",     "title": "Word, gesture or act intended to insult the modesty of a woman", "verified": false, "source_note": "Check against official BNS text (India Code / Gazette)."},
+
+    {"old_code": "CRPC", "old": "41",  "new_code": "BNSS", "new": "35",  "title": "When police may arrest without warrant", "verified": false, "source_note": "Check against official BNSS text (India Code / Gazette)."},
+    {"old_code": "CRPC", "old": "125", "new_code": "BNSS", "new": "144", "title": "Order for maintenance of wives, children and parents", "verified": false, "source_note": "Check against official BNSS text (India Code / Gazette)."},
+    {"old_code": "CRPC", "old": "154", "new_code": "BNSS", "new": "173", "title": "Information in cognizable cases (FIR)", "verified": false, "source_note": "Check against official BNSS text (India Code / Gazette)."},
+    {"old_code": "CRPC", "old": "156", "new_code": "BNSS", "new": "175", "title": "Police officer's power to investigate cognizable cases", "verified": false, "source_note": "Check against official BNSS text (India Code / Gazette)."},
+    {"old_code": "CRPC", "old": "161", "new_code": "BNSS", "new": "180", "title": "Examination of witnesses by police", "verified": false, "source_note": "Check against official BNSS text (India Code / Gazette)."},
+    {"old_code": "CRPC", "old": "164", "new_code": "BNSS", "new": "183", "title": "Recording of confessions and statements", "verified": false, "source_note": "Check against official BNSS text (India Code / Gazette)."},
+    {"old_code": "CRPC", "old": "173", "new_code": "BNSS", "new": "193", "title": "Report of police officer on completion of investigation", "verified": false, "source_note": "Check against official BNSS text (India Code / Gazette)."},
+    {"old_code": "CRPC", "old": "313", "new_code": "BNSS", "new": "351", "title": "Power to examine the accused", "verified": false, "source_note": "Check against official BNSS text (India Code / Gazette)."},
+    {"old_code": "CRPC", "old": "437", "new_code": "BNSS", "new": "480", "title": "When bail may be taken in case of non-bailable offence", "verified": false, "source_note": "Check against official BNSS text (India Code / Gazette)."},
+    {"old_code": "CRPC", "old": "438", "new_code": "BNSS", "new": "482", "title": "Direction for grant of bail to person apprehending arrest", "verified": false, "source_note": "Check against official BNSS text (India Code / Gazette)."},
+    {"old_code": "CRPC", "old": "439", "new_code": "BNSS", "new": "483", "title": "Special powers of High Court or Court of Session regarding bail", "verified": false, "source_note": "Check against official BNSS text (India Code / Gazette)."},
+    {"old_code": "CRPC", "old": "482", "new_code": "BNSS", "new": "528", "title": "Saving of inherent powers of the High Court", "verified": false, "source_note": "Check against official BNSS text (India Code / Gazette)."},
+
+    {"old_code": "EVIDENCE", "old": "45",  "new_code": "BSA", "new": "39",  "title": "Opinions of experts", "verified": false, "source_note": "Check against official BSA text (India Code / Gazette)."},
+    {"old_code": "EVIDENCE", "old": "65B", "new_code": "BSA", "new": "63",  "title": "Admissibility of electronic records", "verified": false, "source_note": "Check against official BSA text (India Code / Gazette)."},
+    {"old_code": "EVIDENCE", "old": "101", "new_code": "BSA", "new": "104", "title": "Burden of proof", "verified": false, "source_note": "Check against official BSA text (India Code / Gazette)."},
+    {"old_code": "EVIDENCE", "old": "106", "new_code": "BSA", "new": "109", "title": "Burden of proving fact especially within knowledge", "verified": false, "source_note": "Check against official BSA text (India Code / Gazette)."},
+    {"old_code": "EVIDENCE", "old": "114", "new_code": "BSA", "new": "119", "title": "Court may presume existence of certain facts", "verified": false, "source_note": "Check against official BSA text (India Code / Gazette)."}
+  ]
+}

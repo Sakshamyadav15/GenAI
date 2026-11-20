@@ -1,4 +1,6 @@
-# Frontend
+# Frontend (NyayaCheck)
+
+Presented as an Indian legal research support tool: navy/gold identity, a persistent "not legal advice" banner, legal wording (Research, Case file / Authorities, Sources considered, Citation checks) and an honest "Indian law roadmap" page that lists planned India-specific checks as *in development / not yet available*. Only wording and styling were changed for this; the app's behaviour is the general-purpose pipeline. The accent classes `indigo-*` are remapped to a navy scale in `src/index.css` (`@theme`).
 
 React 18 + Vite + Tailwind CSS v4 + TypeScript. No chart library (bars are plain CSS).
 
@@ -8,11 +10,11 @@ npm run dev      # http://localhost:5173, proxies /api -> http://localhost:8000
 npm run build    # type-check + production build into dist/
 ```
 
-Start the backend first (`uvicorn app.main:app --port 8000` in `backend/`). Light and dark themes follow the OS setting.
+Start the backend first (`uvicorn app.main:app --port 8000` in `backend/`). The theme is light only.
 
 | Route | Page |
 |---|---|
-| `/` | Chat: proposed / baseline / side-by-side, demo-question chips, live pipeline steps (SSE), clickable `[n]` citations, sentences coloured by verification status, uncertainty banner |
+| `/` | Research: proposed / baseline / side-by-side, demo-question chips, live pipeline steps (SSE), clickable `[n]` citations, sentences coloured by verification status, uncertainty banner |
 | `/documents` | Upload (PDF, DOCX, TXT, MD), list, delete |
 | `/insights[/:id]` | Complexity score and components, information needs, k and expansions, retrieval confidence, latency and token/cost breakdown, retrieved chunks |
 | `/verification[/:id]` | Attempts timeline, per-claim status, method, citation status, NLI bars, evidence text, judge quote, refinement steps |

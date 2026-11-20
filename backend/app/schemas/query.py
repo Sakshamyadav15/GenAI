@@ -12,6 +12,7 @@ from app.schemas.pipeline import (
     SupportStatus,
     Uncertainty,
     VerificationReport,
+    BudgetReport,
 )
 
 
@@ -47,6 +48,7 @@ class RetrievedChunk(BaseModel):
     rank: int
     citation_number: int = Field(description="Number the generator saw this chunk under, e.g. [3].")
     retrieved_by: str = Field("original_query", description="original_query, sub_query:<i> or refinement:<attempt>")
+    section_label: str | None = Field(None, description="e.g. 'Bharatiya Nyaya Sanhita, 2023, Section 103' for statute chunks.")
 
 
 class RetrievalTrace(BaseModel):
@@ -69,6 +71,7 @@ class Citation(BaseModel):
     doc_id: str
     filename: str
     page: int | None
+    label: str | None = None
 
 
 class CitedSentence(BaseModel):
@@ -126,6 +129,7 @@ class QueryResponse(BaseModel):
     selected_attempt: int | None = None
     refinements: list[RefinementStep] = Field(default_factory=list)
     uncertainty: Uncertainty | None = None
+    budget: BudgetReport | None = None
     usage: UsageSummary
     timings_ms: dict[str, float]
     total_latency_ms: float

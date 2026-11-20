@@ -144,12 +144,12 @@ function Insights({ r }: { r: QueryResponse }) {
         </ul>
       </Card>
 
-      <Card title={`Retrieved chunks (${rt.chunks.length})`}>
+      <Card title={`Passages retrieved (${rt.chunks.length})`}>
         <div className="space-y-2">
           {rt.chunks.map((ch) => (
             <details key={ch.chunk_id} className="rounded-lg border border-slate-200 p-2 text-sm">
               <summary className="cursor-pointer">
-                <strong>[{ch.citation_number}]</strong> {sourceLabel(ch.filename, ch.page)}{' '}
+                <strong>[{ch.citation_number}]</strong> {sourceLabel(ch.filename, ch.page, ch.section_label)}{' '}
                 <Badge tone="info">{ch.score.toFixed(3)}</Badge> <Badge>{ch.retrieved_by}</Badge>
               </summary>
               <p className="mt-2 whitespace-pre-wrap text-slate-700">{ch.text}</p>
@@ -162,5 +162,5 @@ function Insights({ r }: { r: QueryResponse }) {
 }
 
 export default function InsightsPage() {
-  return <TraceView base="insights" title="Retrieval Insights" subtitle="How the system judged the question’s difficulty, how many chunks it chose to retrieve, and what it found." render={(r) => <Insights r={r} />} />;
+  return <TraceView base="insights" title="Sources considered" subtitle="How difficult the system judged the question to be, how many passages it chose to retrieve, and which authorities it found." render={(r) => <Insights r={r} />} />;
 }

@@ -51,6 +51,7 @@ class EvidenceSpan(BaseModel):
     chunk_id: str
     filename: str
     page: int | None
+    section_label: str | None = None
     text: str
     similarity: float
     entailment: float
@@ -104,3 +105,11 @@ class Uncertainty(BaseModel):
     notice: str | None
     unsupported_claims: list[str]
     removed_sentences: list[str]
+
+
+class BudgetReport(BaseModel):
+    """Present only when a per-query cost ceiling is configured."""
+
+    ceiling_usd: float
+    spent_usd: float
+    skipped_steps: list[str] = Field(default_factory=list, description="Optional steps skipped to stay under the ceiling.")

@@ -122,17 +122,20 @@ class NLIRegistry:
                 self._models[name] = HFEntailmentModel(name, device=self._device)
             return self._models[name]
 
-    def preload(self, name: str) -> threading.Thread:
-        model = self.get(name)
+    def preload(self, *names: str) -> threading.Thread:
+        """Load the given models in ONE background thread, one after the other (transformers' lazy imports
+        are not safe to trigger from several threads at once)."""
+        models = [self.get(name) for name in names]
 
         def _load() -> None:
-            try:
-                if isinstance(model, HFEntailmentModel):
-                    model.load()
-            except Exception:  # noqa: BLE001 - reported through status; the request path retries the load
-                logger.exception("Background load of NLI model %s failed", name)
+            for model in models:
+                try:
+                    if isinstance(model, HFEntailmentModel):
+                        model.load()
+                except Exception:  # noqa: BLE001 - reported through status; the request path retries the load
+                    logger.exception("Background load of NLI model %s failed", model.name)
 
-        thread = threading.Thread(target=_load, name=f"nli-preload-{name}", daemon=True)
+        thread = threading.Thread(target=_load, name="nli-preload", daemon=True)
         thread.start()
         return thread
 

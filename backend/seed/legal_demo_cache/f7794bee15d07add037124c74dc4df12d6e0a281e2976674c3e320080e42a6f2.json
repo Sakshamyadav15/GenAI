@@ -1,0 +1,368 @@
+{
+  "version": 1,
+  "key": "f7794bee15d07add037124c74dc4df12d6e0a281e2976674c3e320080e42a6f2",
+  "question": "What is the Supreme Court's current view on whether the right to privacy is a fundamental right?",
+  "pipeline": "proposed",
+  "corpus": "indian_acts",
+  "overrides": {},
+  "corpus_fingerprint": [
+    "6fc2598198bfe22d76513530339f19da0cd79a947904f25cf1c9a1ea380be081",
+    "819ba7adc5e5ae4063f26c82472283ba682ddb662e5a7f864cf26984d99b26ed"
+  ],
+  "recorded_at": "2026-11-05T13:25:02.371275Z",
+  "response": {
+    "query_id": "3d8fb5ae67cf4364b6df9f0d7d07ce82",
+    "created_at": "2026-11-05T13:25:02.371275Z",
+    "pipeline": "proposed",
+    "variant": {
+      "adaptive": false,
+      "decompose": false,
+      "verify": true
+    },
+    "corpus": "indian_acts",
+    "question": "What is the Supreme Court's current view on whether the right to privacy is a fundamental right?",
+    "answer": "This question cannot be answered from the given passages. The provided passages discuss the prohibition of discrimination [1], protection of certain rights regarding freedom of speech [2], the Supreme Court as a court of record [3], and disposal of requests under the Right to Information Act [4], but they do not contain information about the Supreme Court's view on the right to privacy.",
+    "citations": [
+      {
+        "number": 1,
+        "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00025",
+        "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+        "filename": "constitution_of_india.pdf",
+        "page": null,
+        "label": "Constitution of India, Article 15"
+      },
+      {
+        "number": 2,
+        "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00046",
+        "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+        "filename": "constitution_of_india.pdf",
+        "page": null,
+        "label": "Constitution of India, Article 19"
+      },
+      {
+        "number": 3,
+        "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00295",
+        "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+        "filename": "constitution_of_india.pdf",
+        "page": null,
+        "label": "Constitution of India, Article 129"
+      },
+      {
+        "number": 4,
+        "chunk_id": "f9e9f1795a4c4cd580eb6a1acb1c2aba:00027",
+        "doc_id": "f9e9f1795a4c4cd580eb6a1acb1c2aba",
+        "filename": "right_to_information_act_2005.pdf",
+        "page": null,
+        "label": "Right to Information Act, 2005, Section 7"
+      }
+    ],
+    "sentences": [
+      {
+        "index": 0,
+        "text": "This question cannot be answered from the given passages.",
+        "citation_numbers": [],
+        "status": null
+      },
+      {
+        "index": 1,
+        "text": "The provided passages discuss the prohibition of discrimination [1], protection of certain rights regarding freedom of speech [2], the Supreme Court as a court of record [3], and disposal of requests under the Right to Information Act [4], but they do not contain information about the Supreme Court's view on the right to privacy.",
+        "citation_numbers": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "status": null
+      }
+    ],
+    "invalid_citations": [],
+    "retrieval": {
+      "strategy": "fixed_top_k",
+      "k_requested": 4,
+      "k_final": 4,
+      "num_retrieved": 4,
+      "latency_ms": 98.25460001593456,
+      "embedding_latency_ms": 91.91690001171082,
+      "search_latency_ms": 6.337700004223734,
+      "queries": [
+        "What is the Supreme Court's current view on whether the right to privacy is a fundamental right?"
+      ],
+      "confidence": null,
+      "expansions": 0,
+      "chunks": [
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00025",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 25,
+          "text": "Constitution of India, Article 15. Prohibition of discrimination on grounds of religion, race, caste, sex or place of birth\nTHE CONSTITUTION OF INDIA (Part III.—Fundamental Rights) (a) access to shops, public restaurants, hotels and places of public entertainment; or (b) the use of wells, tanks, bathing ghats, roads and places of public resort maintained wholly or partly out of State funds or dedicated to the use of the general public.",
+          "score": 0.619186520576477,
+          "rank": 1,
+          "citation_number": 1,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 15"
+        },
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00046",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 46,
+          "text": "Constitution of India, Article 19. Protection of certain rights regarding freedom of speech, etc\nby the State, or by a corporation owned or controlled by the State, of any trade, business, industry or service, whether to the exclusion, complete or partial, of citizens or otherwise.]",
+          "score": 0.6046862602233887,
+          "rank": 2,
+          "citation_number": 2,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 19"
+        },
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00295",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 295,
+          "text": "Constitution of India, Article 129. Supreme Court to be a court of record\n129. Supreme Court to be a court of record. —The Supreme Court shall be a court of record and shall have all the powers of such a court including the power to punish for contempt of itself.",
+          "score": 0.5984156131744385,
+          "rank": 3,
+          "citation_number": 3,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 129"
+        },
+        {
+          "chunk_id": "f9e9f1795a4c4cd580eb6a1acb1c2aba:00027",
+          "doc_id": "f9e9f1795a4c4cd580eb6a1acb1c2aba",
+          "filename": "right_to_information_act_2005.pdf",
+          "page": null,
+          "chunk_index": 27,
+          "text": "Right to Information Act, 2005, Section 7. Disposal of request\nto in that sub-section; (b) information concerning his or her right with respect to review the decision as to the amount of fees charged or the form of access provided, including the particulars of the appellate authority, time limit, process and any other forms. (4) Where access to the record or a part thereof is required to be provided under this Act and the person to whom access is to be provided is sensorily disabled, the Central Public Information Officer or State Public Information Officer, as the case may be, shall provide assistance to enable access to the information, including providing such assistance as may be appropriate for the inspection.",
+          "score": 0.5928486585617065,
+          "rank": 4,
+          "citation_number": 4,
+          "retrieved_by": "original_query",
+          "section_label": "Right to Information Act, 2005, Section 7"
+        }
+      ]
+    },
+    "complexity": null,
+    "verification": {
+      "claims": [],
+      "support_score": 1.0,
+      "citation_accuracy": null,
+      "num_supported": 0,
+      "num_partial": 0,
+      "num_unsupported": 0,
+      "passed": true,
+      "abstained": true,
+      "extraction_fallback": false,
+      "nli_model": "cross-encoder/nli-roberta-base",
+      "latency_ms": 0.004200031980872154,
+      "timings_ms": {}
+    },
+    "attempts": [
+      {
+        "attempt": 0,
+        "answer": "This question cannot be answered from the given passages. The provided passages discuss the prohibition of discrimination [1], protection of certain rights regarding freedom of speech [2], the Supreme Court as a court of record [3], and disposal of requests under the Right to Information Act [4], but they do not contain information about the Supreme Court's view on the right to privacy.",
+        "sentences": [
+          {
+            "index": 0,
+            "text": "This question cannot be answered from the given passages.",
+            "citation_numbers": [],
+            "status": null
+          },
+          {
+            "index": 1,
+            "text": "The provided passages discuss the prohibition of discrimination [1], protection of certain rights regarding freedom of speech [2], the Supreme Court as a court of record [3], and disposal of requests under the Right to Information Act [4], but they do not contain information about the Supreme Court's view on the right to privacy.",
+            "citation_numbers": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "status": null
+          }
+        ],
+        "invalid_citations": [],
+        "num_context_chunks": 4,
+        "verification": {
+          "claims": [],
+          "support_score": 1.0,
+          "citation_accuracy": null,
+          "num_supported": 0,
+          "num_partial": 0,
+          "num_unsupported": 0,
+          "passed": true,
+          "abstained": true,
+          "extraction_fallback": false,
+          "nli_model": "cross-encoder/nli-roberta-base",
+          "latency_ms": 0.004200031980872154,
+          "timings_ms": {}
+        },
+        "latency_ms": 1371.5046999859624,
+        "cumulative_latency_ms": 1474.483500001952,
+        "cumulative_input_tokens": 602,
+        "cumulative_output_tokens": 75,
+        "cumulative_cost_usd": 0.0
+      }
+    ],
+    "selected_attempt": 0,
+    "refinements": [],
+    "uncertainty": {
+      "flagged": false,
+      "notice": null,
+      "unsupported_claims": [],
+      "removed_sentences": []
+    },
+    "budget": {
+      "ceiling_usd": 0.001,
+      "spent_usd": 0.0,
+      "skipped_steps": []
+    },
+    "usage": {
+      "stages": [
+        {
+          "stage": "query_embedding",
+          "model": "local:BAAI/bge-small-en-v1.5",
+          "input_tokens": 19,
+          "output_tokens": 0,
+          "estimated": true,
+          "cost_usd": 0.0
+        },
+        {
+          "stage": "generation",
+          "model": "gemini-2.5-flash",
+          "input_tokens": 583,
+          "output_tokens": 75,
+          "estimated": false,
+          "cost_usd": 0.0
+        }
+      ],
+      "input_tokens": 602,
+      "output_tokens": 75,
+      "cost_usd": 0.0
+    },
+    "timings_ms": {
+      "retrieval": 98.41399994911626,
+      "generation": 1369.3742000032216,
+      "claim_extraction": 0.3512999974191189,
+      "verification": 0.09190000128000975,
+      "total": 1475.5390000063926
+    },
+    "total_latency_ms": 1475.5390000063926,
+    "models": {
+      "chat": "gemini-2.5-flash",
+      "embedding": "local:BAAI/bge-small-en-v1.5",
+      "nli": "cross-encoder/nli-roberta-base"
+    },
+    "config": {
+      "chunking": {
+        "chunk_size": 1000,
+        "chunk_overlap": 150
+      },
+      "baseline": {
+        "top_k": 4
+      },
+      "generation": {
+        "max_answer_tokens": 250
+      },
+      "proposed": {
+        "adaptive": false,
+        "verify": true
+      },
+      "complexity": {
+        "weights": {
+          "information_needs": 0.35,
+          "reasoning": 0.25,
+          "multi_source": 0.15,
+          "lexical": 0.15,
+          "llm_label": 0.1
+        },
+        "reasoning_scores": {
+          "lookup": 0.0,
+          "aggregation": 0.5,
+          "temporal": 0.5,
+          "comparison": 0.6,
+          "causal": 0.7,
+          "bridge": 1.0
+        },
+        "simple_max": 0.33,
+        "moderate_max": 0.66,
+        "max_tokens": 500
+      },
+      "adaptive": {
+        "k_simple": {
+          "min": 1,
+          "max": 3
+        },
+        "k_moderate": {
+          "min": 4,
+          "max": 7
+        },
+        "k_complex": {
+          "min": 8,
+          "max": 12
+        },
+        "k_cap": 15,
+        "decompose": true,
+        "max_subqueries": 4,
+        "rrf_k": 60,
+        "score_floor": 0.15,
+        "score_ceiling": 0.65,
+        "relevance_threshold": 0.4,
+        "confidence_weight_top1": 0.5,
+        "confidence_weight_mean": 0.2,
+        "confidence_weight_coverage": 0.3,
+        "confidence_threshold": 0.5,
+        "max_expansions": 1,
+        "expansion_step": 3
+      },
+      "verification": {
+        "nli_model": "cross-encoder/nli-roberta-base",
+        "window_sentences": 3,
+        "candidate_windows": 3,
+        "support_threshold": 0.75,
+        "contradiction_threshold": 0.75,
+        "partial_threshold": 0.4,
+        "use_llm_judge": false,
+        "pass_support_score": 0.9,
+        "max_claims": 6,
+        "max_retries": 0,
+        "refine_k": 3,
+        "max_tokens": 900,
+        "llm_claims": false
+      },
+      "budget": {
+        "max_cost_usd": 0.001
+      },
+      "pricing": {
+        "gpt-4o-mini": {
+          "input_per_million": 0.15,
+          "output_per_million": 0.6
+        },
+        "gpt-4o": {
+          "input_per_million": 2.5,
+          "output_per_million": 10.0
+        },
+        "gpt-4.1": {
+          "input_per_million": 2.0,
+          "output_per_million": 8.0
+        },
+        "gpt-4.1-mini": {
+          "input_per_million": 0.4,
+          "output_per_million": 1.6
+        },
+        "text-embedding-3-small": {
+          "input_per_million": 0.02,
+          "output_per_million": 0.0
+        },
+        "text-embedding-3-large": {
+          "input_per_million": 0.13,
+          "output_per_million": 0.0
+        }
+      }
+    },
+    "cached": false,
+    "cached_from": null,
+    "served_ms": null
+  }
+}

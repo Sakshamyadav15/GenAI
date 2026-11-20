@@ -16,13 +16,14 @@ import argparse
 import concurrent.futures as cf
 import json
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
 import httpx
 
 from app.core.config import BACKEND_DIR
-from app.workflows.demo_cache import save_entry
+from app.workflows.demo_cache import cache_key, save_entry
 
 AUDIT_OVERRIDES: dict[str, Any] = {"proposed": {"adaptive": False, "verify": True}, "verification": {"max_retries": 0}}
 SHAPES: list[tuple[str, str, dict[str, Any] | None]] = [
@@ -62,7 +63,14 @@ def build(
         body: dict[str, Any] = {"question": item["question"], "pipeline": pipeline, "corpus": corpus, "use_cache": False}
         if overrides:
             body["overrides"] = overrides
-        response = client.post("/api/query", json=body)
+        if (directory / f"{cache_key(item['question'], pipeline, corpus, overrides)}.json").is_file():
+            return {}  # already recorded in an earlier run (e.g. interrupted by a rate limit)
+        for attempt in range(8):  # free LLM tiers answer HTTP 429 when asked too fast: wait, then retry
+            response = client.post("/api/query", json=body)
+            if response.status_code != 429:
+                break
+            print(f"rate limited ({shape}: {item['question'][:40]}...); waiting 50 s", file=sys.stderr)
+            time.sleep(50)
         response.raise_for_status()
         data = response.json()
         if data.get("cached"):
@@ -91,7 +99,7 @@ def build(
 
     jobs = [(q, shape) for q in questions for shape in SHAPES]
     with cf.ThreadPoolExecutor(max_workers=workers) as pool:
-        rows = list(pool.map(record, jobs))
+        rows = [row for row in pool.map(record, jobs) if row]
 
     if corpus_fingerprint(client, corpus) != fingerprint:
         raise CacheBuildError("The indexed documents changed while recording; entries are not valid. Re-run.")

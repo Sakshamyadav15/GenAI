@@ -1,0 +1,270 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Beyond Existence Checks</title>
+<style>
+@page { size: Letter; margin: 0.75in 0.625in 1in 0.625in; }
+* { box-sizing: border-box; }
+body { font-family: "Times New Roman", "Liberation Serif", Times, serif; font-size: 10pt; line-height: 1.2;
+       color: #000; margin: 0; background: #fff; }
+.paper { column-count: 2; column-gap: 0.25in; text-align: justify; hyphens: auto; }
+.head { column-span: all; text-align: center; margin: 0 0 0.16in 0; }
+.head h1 { font-size: 24pt; line-height: 1.12; margin: 0 0 0.12in 0; font-weight: bold; }
+.head .authors { font-size: 11pt; }
+p { margin: 0 0 0.06in 0; orphans: 2; widows: 2; }
+p.abs { font-size: 9pt; font-weight: bold; font-style: italic; text-align: justify; margin-bottom: 0.07in; }
+.note { font-size: 8pt; font-style: italic; text-align: left; border-top: 0.5pt solid #000;
+        border-bottom: 0.5pt solid #000; padding: 0.03in 0; margin: 0.05in 0 0.1in 0; }
+h2 { font-size: 10pt; font-weight: normal; text-transform: uppercase; text-align: center; margin: 0.12in 0 0.05in 0;
+     break-after: avoid; letter-spacing: 0.02em; }
+h3 { font-size: 10pt; font-weight: normal; font-style: italic; text-align: left; margin: 0.08in 0 0.03in 0;
+     break-after: avoid; }
+tt { font-family: "Consolas", "Courier New", monospace; font-size: 8.5pt; overflow-wrap: anywhere; }
+figure { margin: 0.06in 0; break-inside: avoid; text-align: center; }
+figure.wide { column-span: all; margin: 0.08in 0; }
+figure.wide img { width: 93%; }
+figure img { width: 100%; display: block; margin: 0 auto; }
+figcaption { font-size: 8pt; line-height: 1.18; margin-top: 0.04in; text-align: justify; }
+.pair { column-span: all; display: grid; grid-template-columns: 1fr 1fr; gap: 0.25in; }
+.tbl { margin: 0.08in 0; break-inside: avoid; }
+.tbl.wide { column-span: all; }
+.tcap { font-size: 8pt; line-height: 1.18; text-align: center; margin-bottom: 0.04in; }
+.tcap .tn { font-variant: small-caps; letter-spacing: 0.04em; }
+.tcap .tc { text-align: center; }
+table { border-collapse: collapse; width: 100%; font-size: 8pt; line-height: 1.15; }
+th { border-top: 0.6pt solid #000; border-bottom: 0.4pt solid #000; padding: 0.02in 0.04in; text-align: left;
+     font-weight: bold; }
+td { padding: 0.012in 0.04in; vertical-align: top; text-align: left; }
+tbody tr:last-child td { border-bottom: 0.6pt solid #000; }
+table.t2 td, table.t3 td, table.t5 td, table.t4 td { white-space: nowrap; }
+table.t6 td:first-child { font-weight: bold; width: 18%; }
+.refs { font-size: 8pt; line-height: 1.17; text-align: left; }
+.ref { padding-left: 0.3in; text-indent: -0.3in; margin-bottom: 0.03in; }
+.v { font-style: italic; }
+</style></head><body><div class="paper">
+<div class="head">
+<h1>Beyond Existence Checks: Near-Miss Citation Errors in Indian Supreme Court Judgments and a Local Verification Baseline</h1>
+<div class="authors">Nishchal K J, Riya Acharya, Saksham Yadav</div>
+</div>
+<p class="abs">Abstract&mdash;Citations that point to a real authority which does not support the proposition they are cited for are a known failure mode of legal AI tools, and an existence lookup cannot catch them. We study this failure in an Indian setting. From 199 Supreme Court of India judgments (2023 to 2024) we build a citation-support benchmark in two versions (v0: 286 items; v1: 432 items). Each item pairs a faithful proposition with controlled corruptions: fabricated citations, wrong paragraphs, altered quotes, the wrong criminal code for the offence date, and in v1 three near-miss errors (a similar paragraph of the same judgment, an over-broad holding, swapped parties or outcome). Items are LLM-generated and labelled automatically by construction; no lawyer has validated them. We evaluate an existence check, a locally run NLI model and a date rule. The existence check catches only fabricated citations (F1 0.31 on v1). The local NLI baseline reaches F1 0.86 [0.83, 0.89] on v1, down from 0.96 on v0, but falsely flags 31% of faithful claims and recovers only 52% of over-broad holdings; answering only its most confident 20% of items raises its accuracy to 0.99. An LLM-only checker scored F1 0.99 on v0 but was <i>not evaluated</i> on v1, so we cannot say how hard v1 is for LLM checkers, and we claim no advantage over any prior system. Separately, we report a negative result for a general adaptive-retrieval and claim-verification pipeline: on 36 MuSiQue questions it chose retrieval depth as designed (about 2, 5 and 8 chunks for simple, moderate and complex questions) but did not improve judged answer correctness (0.444 against 0.583 for fixed top-5) and was 6.4 to 13.5 times slower with verification.</p>
+<p class="abs">Index Terms&mdash;legal NLP, citation verification, retrieval-augmented generation, Indian law, benchmark,
+negative results</p>
+
+
+<h2>I. Introduction</h2>
+<p>Retrieval-augmented legal assistants cite their sources, and users reasonably read a citation as evidence. The
+evidence is weaker than it looks. Magesh et al. [1] found that commercial legal research tools marketed as
+mitigating hallucination still produce incorrect or unsupported statements, and Verma [2] isolates a specific
+mechanism: a citation can point to a real case, even the right case, while the cited text does not support the
+proposition. Models in that study caught wrong-case substitutions almost always (93&ndash;100%) but missed many
+wrong-pinpoint errors (37&ndash;61% caught on court opinions), apparently accepting citations on topical overlap
+rather than on support. A database lookup cannot detect this.</p>
+<p>We ask a narrower, practical question for Indian law: <i>how much of this problem can a locally run
+checker catch, and how does the answer change when the errors are near misses?</i> We build a benchmark
+from Supreme Court of India judgments, measure three baselines, and report what they do and do not
+catch. We also report, as a negative result, how a more elaborate general-purpose pipeline (complexity-adaptive
+retrieval plus claim verification) behaved on a standard multi-hop benchmark.</p>
+<p><b>Contributions, conservatively stated.</b> (i) A citation-support benchmark over Indian Supreme Court judgments
+with seven corruption types in v1 (eight across v0 and v1), including three near-miss types and a statute-code transition error specific to the
+1 July 2024 replacement of the IPC by the BNS (labels automatic, not lawyer-validated). (ii) Measurements of an
+existence check, a local NLI model and a rule check on it, showing that the near-miss types are harder than the blunt
+ones, that the NLI baseline pays for its recall with many false flags, and that abstention on low-confidence items
+helps. (iii) A negative result for a general adaptive-and-verified RAG pipeline on 36 MuSiQue questions.</p>
+<p><b>What is new and what is not.</b> Claim-level verification, NLI-based support checking, complexity-adaptive
+retrieval [3] and citation-perturbation evaluation [2] are not new. What we add is the Indian setting, the near-miss
+types and the IPC/BNS error type, as far as we know. We
+did not run any LLM checker on v1 and did not compare against any prior system.</p>
+
+<h2>II. Related Work</h2>
+<p><b>Citation support in legal AI.</b> Verma [2] (arXiv:2608.12571; accepted to the 1st Workshop on AI for Law at
+ICML 2026 according to its arXiv page) perturbs real citations from court opinions and briefs, replacing the cited
+case or changing only the pinpoint page, and evaluates fourteen model configurations; page-level verification
+prompts raise recall but also false positives, and the author concludes that recognising the right legal topic and
+verifying support are distinct capabilities. This is our base paper. Magesh et al. [1] evaluate commercial legal
+research tools on a preregistered query set and find vendors' hallucination-free claims overstated.
+<b>Claim auditing.</b> GANDR [4] pairs an answer-writing agent with a critic that audits each claim against its cited
+source, reporting 70.8% strict accuracy on a 185-item legal benchmark and an audit F1 of 0.84 as a detector of
+under-supported claims (figures as stated on the arXiv abstract page; we have not read the full paper).
+<b>Retrieval and adaptivity.</b> Adaptive-RAG [3] routes questions by a trained complexity classifier; Self-RAG [5]
+trains a model to decide when to retrieve and to critique its output. LegalBench-RAG [6] benchmarks the retrieval step
+over legal documents. Our general pipeline differs from [3] by using an untrained hybrid complexity score and by
+adding claim verification with bounded retries, but we do not evaluate it against [3] or [5].</p>
+
+<h2>III. Benchmark</h2>
+<p><b>Corpus.</b> We sampled 200 English judgments at random (seed 13; 100 from 2023 and 100
+from 2024) from the Indian Supreme Court Judgments open dataset [7] and extracted text for
+199 (one download failed with HTTP 404; no PDF was scanned or empty). Paragraphs were split on the
+court's own numbering for 167 judgments (84%)
+and on blank lines for the other 32; the mean is 27.2 paragraphs
+per judgment (median 21). The registry lists the licence as CC-BY-4.0, but it is not
+clear whether that covers the judgment texts or only the compilation, so we do not redistribute any judgment text.</p>
+<p><b>Items and taxonomy.</b> An item is a claim, a cited authority (a case citation with a paragraph, or a statute
+section) and a label saying whether a careful checker should flag it. Case items follow a matched design: one
+proposition drawn from one paragraph yields a faithful control and several corruptions, so every corruption has a
+control from the same source (Table I; Fig. 1). <i>Surface-level</i> types: a fabricated citation that does not
+resolve; a real paragraph of another case or an unrelated paragraph of the right case; a claim whose meaning is changed
+by a negation or number edit; and a statute claim citing a BNS section for a judgment that predates 1 July 2024.
+<i>Near-miss</i> types (v1 only): the most similar <i>other</i> paragraph of the same judgment (similarity capped, and
+a filter model judged that it does not state the claim); an over-broad holding that drops a condition such as
+"unless" or "only if"; and one party role or outcome swapped.</p>
+<p><b>Generation and filters.</b> v0 propositions and alterations were generated with gpt-4o-mini;
+v1 used gpt-4.1 with gpt-4.1-mini as a filter and text-embedding-3-small for similarity. Items are rejected if the supporting quote is not
+found in the paragraph, if a perturbation does not differ from its original, or, for near paragraphs and over-broad
+holdings, if the filter model judges the corrupted claim still supported (66
+near-paragraph candidates and 75 over-broad candidates were
+rejected for that reason). This filtering may bias what remains toward cases an LLM finds easy.</p>
+<p><b>Label quality.</b> Labels are automatic by construction and no lawyer has validated them. The author read 30
+stratified v1 items: none was clearly mislabelled and 2 (7%) were questionable; one swap ("can" to "cannot") slipped
+past the negation guard. A similar read of 32 v0 items found no clearly wrong label and about 3 weakly constructed
+items. <i>Not built:</i> a wrong-court-binding type, because every judgment is from the Supreme Court, which binds all
+courts under Article 141.</p>
+
+<figure class="fig wide"><img src="figures/fig2_taxonomy.png" alt="Fig. 1"><figcaption>Fig. 1. Benchmark composition by item type and split (darker = test, lighter = dev). v0 has 286 items and v1 432. Near-miss types (orange) exist only in v1. Data: bench_v0_manifest.json, bench_v1_manifest.json.</figcaption></figure>
+<div class="tbl"><div class="tcap"><div class="tn">TABLE I</div><div class="tc">Benchmark composition (items per split; dev / test). Counts are read from bench_v0_manifest.json and bench_v1_manifest.json. Splits are by source judgment (no judgment appears in both).</div></div><table class=""><thead><tr><th>Item type</th><th>v0 dev</th><th>v0 test</th><th>v1 dev</th><th>v1 test</th></tr></thead><tbody><tr><td>Faithful control</td><td>18</td><td>44</td><td>32</td><td>111</td></tr><tr><td>Fabricated case</td><td>15</td><td>35</td><td>8</td><td>42</td></tr><tr><td>Wrong case</td><td>15</td><td>35</td><td>&ndash;</td><td>&ndash;</td></tr><tr><td>Wrong paragraph</td><td>15</td><td>35</td><td>8</td><td>42</td></tr><tr><td>Near paragraph</td><td>&ndash;</td><td>&ndash;</td><td>7</td><td>38</td></tr><tr><td>Over-broad holding</td><td>&ndash;</td><td>&ndash;</td><td>8</td><td>23</td></tr><tr><td>Swapped party or outcome</td><td>&ndash;</td><td>&ndash;</td><td>5</td><td>33</td></tr><tr><td>Altered quote</td><td>15</td><td>35</td><td>8</td><td>42</td></tr><tr><td>Wrong code (IPC/BNS)</td><td>4</td><td>20</td><td>13</td><td>12</td></tr><tr><td><b>Total</b></td><td><b>82</b></td><td><b>204</b></td><td><b>89</b></td><td><b>343</b></td></tr></tbody></table></div>
+
+<h2>IV. Methods</h2>
+<p><b>Checkers.</b> Fig. 2 summarises the systems evaluated. <i>B0 (existence only)</i> flags a case citation that does not resolve to a corpus case.
+<i>B1 (LLM only)</i> shows gpt-4o-mini the claim and the cited paragraph and asks for supported or unsupported.
+<i>B2 (local NLI)</i> scores entailment of the claim by the cited paragraph with <tt>cross-encoder/nli-roberta-base</tt>
+[8], using 3-sentence windows and the whole paragraph, and flags the claim when the best entailment is below a
+threshold tuned on the dev split only. <i>R (date rule)</i> flags a statute citation whose code (IPC or BNS) is wrong
+for the offence date, using the date of the judgment as a proxy; its IPC/BNS section table is partial and
+<b>unverified</b>.</p>
+<p><b>General pipeline (evaluated on MuSiQue [9] only).</b> A hybrid complexity score
+S = (0.35&middot;needs + 0.25&middot;reasoning + 0.15&middot;multi-source + 0.15&middot;lexical + 0.10&middot;LLM-label),
+normalised by the weight sum, sets retrieval depth k by label band (simple 1&ndash;3, moderate 4&ndash;7, complex
+8&ndash;12; interpolated within the band). Multi-part questions are searched per sub-question and fused by Reciprocal
+Rank Fusion; low retrieval confidence triggers a bounded expansion. The generated answer is split into claims, each
+checked against its cited passage by an NLI model (support if entailment &ge; 0.75, contradiction if &ge; 0.75) with a
+quote-validated LLM judge for ambiguous cases; unsupported claims trigger targeted retrieval and regeneration (at most
+two retries), and unsupported sentences are removed with an uncertainty notice. The pipeline and the legal checks are
+separate: we did <b>not</b> evaluate the pipeline on the legal benchmark, and no combined legal verifier was built.</p>
+<figure class="fig wide"><img src="figures/fig1_pipeline.png" alt="Fig. 2"><figcaption>Fig. 2. Systems in this paper. Top: the general adaptive-retrieval and verification pipeline, evaluated on MuSiQue (Section VI-D). Bottom: the legal citation checks evaluated on the Indian benchmark; B1 was run on v0 only.</figcaption></figure>
+
+<h2>V. Experiments</h2>
+<p><b>Legal benchmark.</b> Items are split 30/70 into dev and test by source judgment (seed 13) so that no judgment
+appears in both. B2's threshold is tuned on dev only and metrics are reported on test only
+(204 items for v0, 343 for v1). The flag is the positive class; we report precision, recall, F1 and the
+false-flag rate on faithful controls with 95% bootstrap intervals (2,000 resamples). Per-type precision and F1 use
+the controls of the same kind. For abstention we rank test items by the distance of the NLI score from the threshold
+and report accuracy on the most confident share (a risk-coverage curve). B2's tuned threshold is
+0.9 on v0 and 0.7 on v1.</p>
+<p><b>MuSiQue.</b> 36 test questions (12 each from single-hop decompositions, 2-hop and 3&ndash;4-hop questions) over a
+954-paragraph corpus built from their gold and distractor paragraphs. The pipeline uses gpt-4o-mini and
+text-embedding-3-small with <tt>nli-roberta-base</tt> as verifier; evaluation uses gpt-4.1 as judge and a different NLI
+model (<tt>nli-MiniLM2-L6-H768</tt>) for evidence metrics. Variants: fixed top-5 (B), adaptive depth with
+sub-question retrieval (A), adaptive without decomposition (A&minus;), verification only (V) and both (A+V), plus a
+fixed-k sweep and a retry sweep. Paired differences use a paired bootstrap (10,000 resamples) and an exact McNemar
+test. <i>No answers or claims were labelled by humans</i>; only the retrieval gold paragraphs are human-annotated.</p>
+
+<h2>VI. Results</h2>
+<h3>A. Overall detection</h3>
+<p>Table II and Fig. 3 give the overall picture. An existence check finds fabricated citations and nothing else
+(F1 0.36 on v0, 0.31 on v1). The LLM-only checker reached F1
+0.99 [0.98, 1.00] on v0, which shows that v0 cannot separate a strong auditor from a plain prompt. The local NLI
+baseline fell from 0.96 [0.94, 0.98] on v0 to 0.86 [0.83, 0.89] on v1. The two sets differ in composition, so this is
+indicative and not a controlled comparison. The date rule alone has precision 1.00 but recall
+0.05 on v1, because it can only address one error type.</p>
+<div class="tbl wide"><div class="tcap"><div class="tn">TABLE II</div><div class="tc">Overall detection on the test split (flag = positive class); 95% bootstrap CIs (2,000 resamples). B1 (LLM-only) was run on v0 only. Source: results_baselines.json, results_baselines_v1.json.</div></div><table class="t2"><thead><tr><th>System</th><th>Precision</th><th>Recall</th><th>F1</th><th>False-flag rate</th></tr></thead><tbody><tr><td><i>v0 (n = 204)</i></td><td></td><td></td><td></td><td></td></tr><tr><td>B0 existence only</td><td>1.00 [1.00, 1.00]</td><td>0.22 [0.15, 0.29]</td><td>0.36 [0.27, 0.45]</td><td>0.00 [0.00, 0.00]</td></tr><tr><td>B1 LLM only (gpt-4o-mini)</td><td>1.00 [1.00, 1.00]</td><td>0.98 [0.96, 1.00]</td><td>0.99 [0.98, 1.00]</td><td>0.00 [0.00, 0.00]</td></tr><tr><td>B2 local NLI</td><td>0.93 [0.90, 0.97]</td><td>0.99 [0.97, 1.00]</td><td>0.96 [0.94, 0.98]</td><td>0.25 [0.13, 0.37]</td></tr><tr><td>R IPC/BNS date rule</td><td>1.00 [1.00, 1.00]</td><td>0.12 [0.08, 0.18]</td><td>0.22 [0.14, 0.30]</td><td>0.00 [0.00, 0.00]</td></tr><tr><td><i>v1 (n = 343)</i></td><td></td><td></td><td></td><td></td></tr><tr><td>B0 existence only</td><td>1.00 [1.00, 1.00]</td><td>0.18 [0.13, 0.23]</td><td>0.31 [0.24, 0.38]</td><td>0.00 [0.00, 0.00]</td></tr><tr><td>B1 LLM only</td><td>not run</td><td>not run</td><td>not run</td><td>not run</td></tr><tr><td>B2 local NLI</td><td>0.86 [0.81, 0.90]</td><td>0.87 [0.82, 0.91]</td><td>0.86 [0.83, 0.89]</td><td>0.31 [0.22, 0.39]</td></tr><tr><td>R IPC/BNS date rule</td><td>1.00 [1.00, 1.00]</td><td>0.05 [0.03, 0.08]</td><td>0.10 [0.05, 0.15]</td><td>0.00 [0.00, 0.00]</td></tr></tbody></table></div>
+<figure class="fig"><img src="figures/fig3_f1_v0_v1.png" alt="Fig. 3"><figcaption>Fig. 3. Overall F1 on the test split (95% CIs). The LLM-only checker (B1) was not evaluated on v1, so v1 has not been shown to be harder than v0 for it. Data: results_baselines.json, results_baselines_v1.json.</figcaption></figure>
+
+<h3>B. Where the NLI baseline fails</h3>
+<p>Table III and Fig. 4 give per-type recall. The NLI baseline's recall on v1 is high for blunt errors (fabricated case, wrong paragraph, wrong code) and for
+near paragraphs (0.92 [0.83, 1.00]), but lower for altered quotes
+(0.81 [0.69, 0.92]), swapped parties or outcomes (0.76 [0.60, 0.91])
+and especially over-broad holdings (0.52 [0.30, 0.73]; n = 23).
+An over-broad claim is largely entailed by the paragraph that states the stricter rule, which is what an entailment
+model is built to accept. The intervals for swapped parties or outcomes and over-broad holdings are wide because those
+types have only 33 and 23 test items.</p>
+<div class="tbl wide"><div class="tcap"><div class="tn">TABLE III</div><div class="tc">Per-type recall on v1 (test split) with 95% bootstrap CIs; n is the number of corrupted items of that type. Rows in the same order as Fig. 4. Source: results_baselines_v1.json.</div></div><table class=""><thead><tr><th>Type</th><th>n</th><th>B0 existence</th><th>B2 local NLI</th><th>R date rule</th></tr></thead><tbody><tr><td>Fabricated case</td><td>42</td><td>1.00 [1.00, 1.00]</td><td>1.00 [1.00, 1.00]</td><td>0.00 [0.00, 0.00]</td></tr><tr><td>Wrong paragraph</td><td>42</td><td>0.00 [0.00, 0.00]</td><td>0.98 [0.92, 1.00]</td><td>0.00 [0.00, 0.00]</td></tr><tr><td>Near paragraph</td><td>38</td><td>0.00 [0.00, 0.00]</td><td>0.92 [0.83, 1.00]</td><td>0.00 [0.00, 0.00]</td></tr><tr><td>Altered quote</td><td>42</td><td>0.00 [0.00, 0.00]</td><td>0.81 [0.69, 0.92]</td><td>0.00 [0.00, 0.00]</td></tr><tr><td>Swapped party or outcome</td><td>33</td><td>0.00 [0.00, 0.00]</td><td>0.76 [0.60, 0.91]</td><td>0.00 [0.00, 0.00]</td></tr><tr><td>Over-broad holding</td><td>23</td><td>0.00 [0.00, 0.00]</td><td>0.52 [0.30, 0.73]</td><td>0.00 [0.00, 0.00]</td></tr><tr><td>Wrong code</td><td>12</td><td>0.00 [0.00, 0.00]</td><td>1.00 [1.00, 1.00]</td><td>1.00 [1.00, 1.00]</td></tr></tbody></table></div>
+<figure class="fig wide"><img src="figures/fig4_recall_by_type.png" alt="Fig. 4"><figcaption>Fig. 4. Recall by item type for each checker on v0 (left) and v1 (right), with 95% CIs. Orange tick labels mark the near-miss types. Missing bars mean the checker was not run or the type does not exist in that version. Data: results_baselines.json, results_baselines_v1.json.</figcaption></figure>
+
+<h3>C. False flags and abstention</h3>
+<p>The NLI baseline flags 31% of faithful claims on v1 (34 of 111 controls; Fig. 5),
+including 13 of 42 verbatim case controls and 15 of 40 paraphrase controls, so its false alarms are not mainly a
+paraphrase effect; PDF extraction damages the text it reads (we did not isolate that cause). A recall-oriented
+threshold therefore trades away reliability, a trade-off of the kind Verma [2] reports for page-level verification prompts
+(we make no quantitative comparison; the verifiers differ). Abstaining on the least confident items helps:
+accuracy is 0.99 at 20% coverage, 0.93 at 40%, 0.88 at 60%,
+0.87 at 80% and 0.81 at full coverage (area under the risk-coverage curve
+0.083; Fig. 6).</p>
+<div class="pair">
+<figure class="fig"><img src="figures/fig5_false_flags.png" style="width:100%" alt="Fig. 5"><figcaption>Fig. 5. False-flag rate on faithful controls (95% CIs). B1 was not run on v1. Data: results_baselines*.json.</figcaption></figure>
+<figure class="fig"><img src="figures/fig6_risk_coverage.png" style="width:100%" alt="Fig. 6"><figcaption>Fig. 6. Risk-coverage curves of the NLI baseline on the test split; confidence is the distance of the NLI score from the dev-tuned threshold. Dotted lines: accuracy at full coverage. Data: decisions_baselines*.json with the item labels.</figcaption></figure>
+</div>
+
+<h3>D. General pipeline on MuSiQue: a negative result</h3>
+<p>Tables IV and V and Figs. 7&ndash;9 give the results. Adaptive depth behaved as designed: mean chunks given to the generator were
+1.9, 5.1 and 8.2 for simple,
+moderate and complex questions, against 5.0 for the fixed baseline (Fig. 7b). The complexity label agreed with the
+hop-count group for 0.639 of questions (Fig. 9; hop count is a proxy, not a human
+complexity label). It did not improve answers. Judged correctness was 0.583 [0.417, 0.750] for the baseline and
+0.444 [0.278, 0.611] for A+V. The paired difference for A+V is -0.139 [-0.250, -0.028]; the interval excludes zero but the
+exact McNemar test gives p = 0.0625 (baseline correct and variant wrong on
+5 questions, the reverse on 0), so the evidence is suggestive and
+not conclusive at n = 36. Verification alone (V) was not clearly different (-0.083 [-0.194, +0.000]).
+The unsupported-claim rate did not differ reliably (A+V: -0.045 [-0.227, +0.136]), citation metrics were
+similarly unresolved, and retries (0, 1, 2) showed no resolved effect (Fig. 8c). The drawback was latency:
+6.4 times the baseline for V and 13.5 times for A+V (relative only), and about
+3.6 times the tokens
+for A+V. A fixed depth of about five was best overall in the sweep (Fig. 8a); correctness plateaued by k = 5 for simple
+and moderate questions and peaked at k = 5 for complex ones (Fig. 8b), so no group gained from deeper retrieval.</p>
+<div class="tbl wide"><div class="tcap"><div class="tn">TABLE IV</div><div class="tc">MuSiQue ablation (36 test questions: 12 simple, 12 moderate, 12 complex). Mean [95% bootstrap CI]. Correctness is judged by gpt-4.1 against the gold answer; recall is measured against human-annotated MuSiQue supporting paragraphs. Latency is relative only (several queries ran concurrently on one CPU). Source: experiments/results/main/summary.json.</div></div><table class="t4"><thead><tr><th>Variant</th><th>Correct</th><th>Recall@k</th><th>Chunks</th><th>Latency (s)</th><th>Tokens/query</th></tr></thead><tbody><tr><td>B Fixed top-5 (baseline)</td><td>0.583 [0.417, 0.750]</td><td>0.731 [0.632, 0.829]</td><td>5.00</td><td>1.6</td><td>837</td></tr><tr><td>A Adaptive retrieval</td><td>0.444 [0.278, 0.611]</td><td>0.662 [0.549, 0.771]</td><td>5.08</td><td>3.0</td><td>1357</td></tr><tr><td>A&minus; Adaptive, no decomposition</td><td>0.444 [0.278, 0.611]</td><td>0.606 [0.484, 0.722]</td><td>4.83</td><td>2.8</td><td>1278</td></tr><tr><td>V Verification only</td><td>0.500 [0.333, 0.667]</td><td>0.745 [0.644, 0.843]</td><td>5.39</td><td>10.4</td><td>2853</td></tr><tr><td>A+V Adaptive + verification</td><td>0.444 [0.278, 0.611]</td><td>0.699 [0.588, 0.801]</td><td>5.14</td><td>21.9</td><td>2999</td></tr></tbody></table></div>
+<div class="tbl wide"><div class="tcap"><div class="tn">TABLE V</div><div class="tc">Paired differences against the fixed top-5 baseline (same 36 questions; paired bootstrap, 10,000 resamples). McNemar is the exact test on judged correctness (only the baseline correct / only the variant correct). Source: summary.json, paired.</div></div><table class="t5"><thead><tr><th>Variant vs. B</th><th>Correct</th><th>McNemar p</th><th>Unsupported rate</th><th>Chunks</th><th>Latency (s)</th></tr></thead><tbody><tr><td>A</td><td>-0.139 [-0.250, -0.028]</td><td>0.0625 (5 vs 0)</td><td>-0.005 [-0.167, +0.157]</td><td>+0.08 [-1.03, +1.19]</td><td>+1.3 [+1.2, +1.5]</td></tr><tr><td>A&minus;</td><td>-0.139 [-0.250, -0.028]</td><td>0.0625 (5 vs 0)</td><td>+0.029 [-0.100, +0.157]</td><td>-0.17 [-1.25, +0.92]</td><td>+1.2 [+1.0, +1.4]</td></tr><tr><td>V</td><td>-0.083 [-0.194, +0.000]</td><td>0.2500 (3 vs 0)</td><td>-0.034 [-0.118, +0.034]</td><td>+0.39 [+0.00, +0.89]</td><td>+8.7 [+5.8, +12.1]</td></tr><tr><td>A+V</td><td>-0.139 [-0.250, -0.028]</td><td>0.0625 (5 vs 0)</td><td>-0.045 [-0.227, +0.136]</td><td>+0.14 [-0.92, +1.19]</td><td>+20.3 [+11.4, +30.9]</td></tr></tbody></table></div>
+<figure class="fig wide"><img src="figures/fig7_musique_main.png" alt="Fig. 7"><figcaption>Fig. 7. MuSiQue ablation. (a) judged answer correctness with 95% CIs (B fixed top-5; A adaptive; A&minus; adaptive without decomposition; V verification only; A+V both). (b) mean chunks given to the generator by question group. (c) total latency on a log scale, relative only. Data: experiments/results/main/summary.json.</figcaption></figure>
+<figure class="fig wide"><img src="figures/fig8_musique_sweeps.png" alt="Fig. 8"><figcaption>Fig. 8. (a) fixed-k sweep, overall; (b) fixed-k sweep by question group (12 questions each); (c) retry sweep for A+V on an 18-question subset (95% CIs; mean attempts shown). Data: summary.json.</figcaption></figure>
+<figure class="fig"><img src="figures/fig9_classifier.png" style="width:72%" alt="Fig. 9"><figcaption>Fig. 9. Predicted complexity label against hop-count group on the 36 test questions. Data: summary.json, classifier.</figcaption></figure>
+
+<h2>VII. Discussion</h2>
+<p><b>What our results do and do not say about the base paper.</b> Table VI compares the two setups. Verma [2] reports that LLM verifiers catch
+wrong-case substitutions almost always but miss many wrong-pinpoint errors. In our setting, the nearest analogues of
+a wrong case and a wrong pinpoint are our wrong-case (v0) and near-paragraph (v1) items. Our local NLI baseline caught
+0.97 [0.91, 1.00] of wrong-case items and
+0.92 [0.83, 1.00] of near-paragraph items, and our LLM-only checker caught all wrong-case items on
+v0. We do <b>not</b> claim to replicate or contradict [2]: the verifiers (a small NLI model against LLMs), the
+corruptions (our near paragraphs were filtered so that they do not state the claim; changing only a page may leave the
+supporting text largely intact), the corpora and the jurisdiction all differ. What our data supports is narrower: on
+this benchmark a locally run NLI baseline is weak exactly where an entailment model is structurally weak (over-broad
+claims, swaps), and it trades recall for false flags. LLM checkers were not evaluated on v1, so the central
+question of whether near-miss errors are also hard for LLM verifiers in this Indian setting remains open.</p>
+<p><b>Implications.</b> (i) Existence checks are not enough: they catch only fabricated citations. (ii) Abstention is
+useful: the NLI baseline is far more accurate on its confident items. (iii) The general adaptive-and-verified pipeline
+should not be assumed to help; on 36 questions it took much more time and gave no measured accuracy gain. A larger
+evaluation with human labels would be needed before claiming either benefit or harm.</p>
+<div class="tbl wide"><div class="tcap"><div class="tn">TABLE VI</div><div class="tc">How this study differs from the base paper (Verma, 2026), as far as can be read from its arXiv abstract page. We did not compare against that system and make no claim of superiority.</div></div><table class="t6"><thead><tr><th>Aspect</th><th>Base paper (Verma, 2026)</th><th>This study</th></tr></thead><tbody><tr><td>Corpora</td><td>Two legal corpora of court opinions and briefs (not named on the abstract page)</td><td>199 Supreme Court of India judgments (2023 to 2024), one court</td></tr><tr><td>Error types</td><td>Wrong cited case; wrong pinpoint page within the same case</td><td>Fabricated case, wrong paragraph, near paragraph, over-broad holding, swapped party/outcome, altered quote, wrong criminal code for the offence date (IPC vs. BNS)</td></tr><tr><td>Verifiers</td><td>Fourteen LLM configurations, including reasoning models</td><td>Existence check, local NLI model, rule check; an LLM-only checker (gpt-4o-mini) on v0 only</td></tr><tr><td>Items</td><td>Perturbations of real citations</td><td>LLM-generated propositions from real paragraphs, then perturbed; labels automatic by construction</td></tr><tr><td>Jurisdiction-specific checks</td><td>Not applicable (as far as we can tell)</td><td>IPC/BNS date rule with an unverified section table</td></tr><tr><td>Did NOT do</td><td>&ndash;</td><td>No LLM checker on v1; no head-to-head with the base paper; no lawyer-labelled items; no High Court data; no good-law (overruled) check; no evaluation of a combined legal verifier</td></tr></tbody></table></div>
+
+<h2>VIII. Limitations and Ethics</h2>
+<p><b>Labels and items.</b> Items are LLM-generated and labelled by construction; no lawyer validated any label, and
+a paragraph can contain several propositions, so "wrong paragraph" is only approximately wrong. Source paragraphs for
+over-broad holdings were chosen because they contain a condition word. The filtering described in Section III may bias
+the benchmark toward cases an LLM finds easy. <b>Scope.</b> One court, two years, 199 judgments, English only; no High
+Court data and no good-law (overruled or distinguished) information. The statute subset is small. <b>Statutes.</b> The
+IPC/BNS section table is partial and unverified (it was assembled without access to the official Gazette) and must be
+checked against official texts before any reliance; the date rule uses the judgment date as a proxy for the offence
+date and ignores transitional provisions. <b>Baselines.</b> The LLM-only checker was run on v0 only, and it used the same
+model family as the v0 generator, which may inflate it. The NLI baseline reads PDF-extracted text, which is damaged in
+places. <b>MuSiQue.</b> 36 questions, automatic evaluation by an LLM judge and a strict NLI evaluator whose absolute
+claim-support values are probably underestimates and were not validated by humans; latencies were measured with
+concurrent queries on a CPU machine; the verifier used was a small NLI model for speed, not the application's default.
+<b>Licence and ethics.</b> The licence covering the judgment texts is unconfirmed, so item files containing judgment
+quotes are not released. This work is a research prototype and decision support only: it is not legal advice, it was not
+evaluated by legal professionals, and any tool built on it should require human verification of every authority.</p>
+
+<h2>IX. Conclusion</h2>
+<p>We built an Indian Supreme Court citation-support benchmark with near-miss error types and measured three
+baselines on it. <b>Positive:</b> abstention on low-confidence items markedly raises the NLI baseline's
+accuracy, and the near-miss types make the benchmark harder for it. <b>Negative:</b> the NLI baseline falsely flags
+about a third of faithful claims and misses about half of over-broad holdings; an existence check catches only
+fabricated citations; and a general adaptive-and-verified RAG pipeline did not improve judged correctness on 36 MuSiQue
+questions while being much slower. <b>Inconclusive:</b> whether v1 is hard for LLM checkers, whether verification
+reduces unsupported claims, and any comparison with prior systems. Next steps are LLM-checker baselines on v1,
+lawyer-validated labels, High Court data, and verification of the statute table against official texts.</p>
+
+<h2>Appendix: Reproducibility</h2>
+<p style="text-align:left">All figures and tables are generated by <tt>paper/figures.py</tt> and <tt>paper/build.py</tt> from the result files
+named in the captions. The legal benchmark scripts are <tt>backend/scripts/legal_india_bench.py</tt> (v0 and v1) and the
+corpus script is <tt>backend/scripts/legal_india_fetch.py</tt>. Seeds are 13 throughout. Models used: gpt-4o-mini (v0 item generation and the B1 checker), gpt-4.1
+(v1 item generation) with gpt-4.1-mini as the v1 filter and text-embedding-3-small for
+similarity; <tt>cross-encoder/nli-roberta-base</tt> (B2); and, for the MuSiQue experiment, gpt-4o-mini (pipeline),
+<tt>cross-encoder/nli-roberta-base</tt> (verifier), gpt-4.1 (judge) and
+<tt>cross-encoder/nli-MiniLM2-L6-H768</tt> (evidence evaluator).</p>
+
+<h2>References</h2><div class="refs"><div class="ref">[1] V. Magesh, F. Surani, M. Dahl, M. Suzgun, C. D. Manning, and D. E. Ho, &ldquo;Hallucination-free? Assessing the reliability of leading AI legal research tools,&rdquo; <i>J. Empirical Legal Studies</i>, 2025; arXiv:2405.20362.</div><div class="ref">[2] A. Verma, &ldquo;Is this citation on point?,&rdquo; arXiv:2608.12571, 2026.</div><div class="ref">[3] S. Jeong, J. Baek, S. Cho, S. J. Hwang, and J. Park, &ldquo;Adaptive-RAG: Learning to adapt retrieval-augmented large language models through question complexity,&rdquo; in <i>Proc. NAACL</i>, 2024; arXiv:2403.14403.</div><div class="ref">[4] C. Qian, Y. Wang, Y. Chen, L. Wu, and A. Stathopoulos, &ldquo;GANDR: Claim auditing for verifiable legal answer generation,&rdquo; arXiv:2609.10293, 2026.</div><div class="ref">[5] A. Asai, Z. Wu, Y. Wang, A. Sil, and H. Hajishirzi, &ldquo;Self-RAG: Learning to retrieve, generate, and critique through self-reflection,&rdquo; in <i>Proc. ICLR</i>, 2024; arXiv:2310.11511.</div><div class="ref">[6] N. Pipitone and G. H. Alami, &ldquo;LegalBench-RAG: A benchmark for retrieval-augmented generation in the legal domain,&rdquo; arXiv:2408.10343, 2024.</div><div class="ref">[7] &ldquo;Indian Supreme Court Judgments,&rdquo; AWS Open Data registry (Dattam Labs). [Online]. Available: https://registry.opendata.aws/indian-supreme-court-judgments/ (accessed Nov. 3, 2026).</div><div class="ref">[8] <tt>cross-encoder/nli-roberta-base</tt>, Hugging Face model hub.</div><div class="ref">[9] H. Trivedi, N. Balasubramanian, T. Khot, and A. Sabharwal, &ldquo;MuSiQue: Multihop questions via single-hop question composition,&rdquo; <i>Trans. Assoc. Comput. Linguistics</i>, 2022.</div></div>
+</div></body></html>

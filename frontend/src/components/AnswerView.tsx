@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { QueryResponse, RetrievedChunk, Sentence } from '../types';
-import { Badge, Card, sourceLabel, statusStyles } from './ui';
+import { Badge, Card, legalStatusLabel, sourceLabel, statusStyles } from './ui';
 
 const CITATION = /\[(\d+(?:\s*[,;]\s*\d+)*)\]/g;
 
@@ -15,7 +15,7 @@ function SentenceText({ sentence, onCite }: { sentence: Sentence; onCite: (n: nu
   parts.push(sentence.text.slice(last));
   const style = sentence.status ? statusStyles[sentence.status] : '';
   return (
-    <span className={`rounded px-0.5 ${style}`} title={sentence.status ? `Verification: ${sentence.status}` : undefined}>
+    <span className={`rounded px-0.5 ${style}`} title={sentence.status ? `Citation check: ${legalStatusLabel(sentence.status)}` : undefined}>
       {parts.map((p, i) =>
         typeof p === 'string' ? (
           <span key={i}>{p}</span>
@@ -41,7 +41,7 @@ export function ChunkPopover({ chunk, onClose }: { chunk: RetrievedChunk | undef
     <div className="mt-3 rounded-lg border border-indigo-300 bg-indigo-50 p-3 text-sm">
       <div className="mb-1 flex items-center justify-between">
         <strong>
-          [{chunk.citation_number}] {sourceLabel(chunk.filename, chunk.page)}
+          [{chunk.citation_number}] {sourceLabel(chunk.filename, chunk.page, chunk.section_label)}
           <span className="ml-2 font-normal text-slate-500">similarity {chunk.score.toFixed(3)}</span>
         </strong>
         <button onClick={onClose} className="text-xs text-slate-500 hover:underline">
@@ -65,12 +65,12 @@ export function AnswerView({ response }: { response: QueryResponse }) {
     <div>
       {response.uncertainty?.flagged && (
         <div className="mb-3 rounded-lg border border-amber-400 bg-amber-50 p-3 text-sm text-amber-900">
-          <strong>Uncertainty: </strong>
+          <strong>Caution: </strong>
           {response.uncertainty.notice}
           {response.uncertainty.unsupported_claims.length > 0 && (
             <ul className="mt-1 list-disc pl-5">
               {response.uncertainty.unsupported_claims.map((c) => (
-                <li key={c}>Unverified: {c}</li>
+                <li key={c}>Not verified against the authorities: {c}</li>
               ))}
             </ul>
           )}
@@ -85,26 +85,26 @@ export function AnswerView({ response }: { response: QueryResponse }) {
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
         {verified ? (
           <>
-            <Badge tone="supported">supported</Badge>
-            <Badge tone="partial">partial</Badge>
-            <Badge tone="unsupported">unsupported</Badge>
+            <Badge tone="supported">Supported by authority</Badge>
+            <Badge tone="partial">Partly supported</Badge>
+            <Badge tone="unsupported">Not supported</Badge>
           </>
         ) : (
-          <Badge>not verified (no evidence verification in this pipeline)</Badge>
+          <Badge>Citations not checked (this pipeline does no citation checking)</Badge>
         )}
         {response.invalid_citations.length > 0 && (
-          <Badge tone="unsupported">invalid citations: {response.invalid_citations.join(', ')}</Badge>
+          <Badge tone="unsupported">citations matching no retrieved authority: {response.invalid_citations.join(', ')}</Badge>
         )}
       </div>
       {response.citations.length > 0 && (
-        <Card title="Sources" className="mt-4 !p-3">
+        <Card title="Authorities cited" className="mt-4 !p-3">
           <ul className="space-y-1 text-sm">
             {response.citations.map((c) => (
               <li key={c.number}>
                 <button className="text-indigo-700 hover:underline" onClick={() => setOpen(c.number)}>
                   [{c.number}]
                 </button>{' '}
-                {sourceLabel(c.filename, c.page)}
+                {sourceLabel(c.filename, c.page, c.label)}
               </li>
             ))}
           </ul>

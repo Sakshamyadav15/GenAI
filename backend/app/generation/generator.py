@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import AIMessage
 
-from app.core.llm import message_text
+from app.core.llm import limit_kwargs, message_text
 from app.generation.prompts import ContextPassage, Revision, build_generation_messages
 
 
@@ -24,6 +24,6 @@ class AnswerGenerator:
         self, question: str, chunks: Sequence[ContextPassage], *, max_tokens: int, revision: Revision | None = None
     ) -> GenerationResult:
         messages = build_generation_messages(question, chunks, revision)
-        response = await self._model.bind(max_tokens=max_tokens).ainvoke(messages)
+        response = await self._model.bind(**limit_kwargs(self._model, max_tokens)).ainvoke(messages)
         prompt_text = "\n\n".join(message_text(m) for m in messages)
         return GenerationResult(answer=message_text(response).strip(), message=response, prompt_text=prompt_text)

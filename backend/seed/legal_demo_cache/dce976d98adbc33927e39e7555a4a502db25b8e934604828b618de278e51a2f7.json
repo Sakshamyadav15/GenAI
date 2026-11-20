@@ -1,0 +1,402 @@
+{
+  "version": 1,
+  "key": "dce976d98adbc33927e39e7555a4a502db25b8e934604828b618de278e51a2f7",
+  "question": "Which article of the Constitution allows a person to approach the Supreme Court to enforce fundamental rights, and which article gives the High Courts a similar power?",
+  "pipeline": "proposed",
+  "corpus": "indian_acts",
+  "overrides": {},
+  "corpus_fingerprint": [
+    "6fc2598198bfe22d76513530339f19da0cd79a947904f25cf1c9a1ea380be081",
+    "819ba7adc5e5ae4063f26c82472283ba682ddb662e5a7f864cf26984d99b26ed"
+  ],
+  "recorded_at": "2026-11-05T13:23:58.807939Z",
+  "response": {
+    "query_id": "5fb2f6e358d14554bae461251ad489ae",
+    "created_at": "2026-11-05T13:23:58.807939Z",
+    "pipeline": "proposed",
+    "variant": {
+      "adaptive": false,
+      "decompose": false,
+      "verify": true
+    },
+    "corpus": "indian_acts",
+    "question": "Which article of the Constitution allows a person to approach the Supreme Court to enforce fundamental rights, and which article gives the High Courts a similar power?",
+    "answer": "The retrieved documents do not provide enough verified evidence to answer this question.",
+    "citations": [],
+    "sentences": [],
+    "invalid_citations": [],
+    "retrieval": {
+      "strategy": "fixed_top_k",
+      "k_requested": 4,
+      "k_final": 4,
+      "num_retrieved": 4,
+      "latency_ms": 104.60819996660575,
+      "embedding_latency_ms": 97.27979998569936,
+      "search_latency_ms": 7.328399980906397,
+      "queries": [
+        "Which article of the Constitution allows a person to approach the Supreme Court to enforce fundamental rights, and which article gives the High Courts a similar power?"
+      ],
+      "confidence": null,
+      "expansions": 0,
+      "chunks": [
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00278",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 278,
+          "text": "Constitution of India, Article 124. Establishment and constitution of the Supreme Court\nExplanation I .—In this clause \"High Court'' means a High Court which exercises, or which at any time before the commencement of this Constitution exercised, jurisdiction in any part of the territory of India. Explanation II .—In computing for the purpose of this clause the period during which a person has been an advocate, any period during which a person has held judicial office not inferior to that of a district judge after he became an advocate shall be included.",
+          "score": 0.6967772245407104,
+          "rank": 1,
+          "citation_number": 1,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 124"
+        },
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00054",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 54,
+          "text": "Constitution of India, Article 22. Protection against arrest and detention in certain cases\nExplanation.—In this clause, \"appropriate High Court\" means,— (i) in the case of the detention of a person in pursuance of an order of detention made by the Government of India or an officer or authority subordinate to that Government, the High Court for the Union territory of Dehli;",
+          "score": 0.6801930665969849,
+          "rank": 2,
+          "citation_number": 2,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 22"
+        },
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00488",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 488,
+          "text": "Constitution of India, Article 216. Constitution of High Courts\n216. Constitution of High Courts.—Every High Court shall consist of a Chief Justice and such other Judges as the President may from time to time deem it necessary to appoint. 3* * * * *",
+          "score": 0.6769924163818359,
+          "rank": 3,
+          "citation_number": 3,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 216"
+        },
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00086",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 86,
+          "text": "Constitution of India, Article 32. Remedies for enforcement of rights conferred by this Part\n(3) Without prejudice to the powers conferred on the Supreme Court by clauses (1) and (2), Parliament may by law empower any other court to exercise within the local limits of its jurisdiction all or any of the powers exercisable by the Supreme Court under clause (2). (4) The right guaranteed by this article shall not be suspended except as otherwise provided for by this Constitution. 132A. [ Constitutional validity of State laws not to be considered in proceedings under article 32.].—Omitted by the Constitution (Forty-third Amendment) Act, 1977, s. 3 (w.e.f. 13-4-1978). 2[33.",
+          "score": 0.6752243041992188,
+          "rank": 4,
+          "citation_number": 4,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 32"
+        }
+      ]
+    },
+    "complexity": null,
+    "verification": {
+      "claims": [
+        {
+          "claim_id": "a0c0",
+          "text": "Article 32 of the Constitution allows a person to approach the Supreme Court to enforce fundamental rights.",
+          "sentence_index": 0,
+          "citations": [
+            4
+          ],
+          "status": "unsupported",
+          "citation_status": "incorrect",
+          "failure": "contradicted",
+          "method": "nli_threshold",
+          "evidence": {
+            "citation_number": 4,
+            "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00086",
+            "filename": "constitution_of_india.pdf",
+            "page": null,
+            "section_label": "Constitution of India, Article 32",
+            "text": "(3) Without prejudice to the powers conferred on the Supreme Court by clauses (1) and (2), Parliament may by law empower any other court to exercise within the local limits of its jurisdiction all or any of the powers exercisable by the Supreme Court under clause (2). (4) The right guaranteed by this article shall not be suspended except as otherwise provided for by this Constitution. 132A. [ Constitutional validity of State laws not to be considered in proceedings under article 32.].—Omitted by the Constitution (Forty-third Amendment) Act, 1977, s. 3 (w.e.f.",
+            "similarity": 0.7143,
+            "entailment": 0.2448,
+            "neutral": 0.7329,
+            "contradiction": 0.0224
+          },
+          "suggested_citation": null,
+          "judge_rationale": null,
+          "judge_quote": null,
+          "judge_quote_verified": null
+        }
+      ],
+      "support_score": 0.0,
+      "citation_accuracy": 0.0,
+      "num_supported": 0,
+      "num_partial": 0,
+      "num_unsupported": 1,
+      "passed": false,
+      "abstained": false,
+      "extraction_fallback": false,
+      "nli_model": "cross-encoder/nli-roberta-base",
+      "latency_ms": 4961.925100011285,
+      "timings_ms": {
+        "embedding": 96.9,
+        "nli": 4864.3,
+        "nli_pairs": 11.0,
+        "judge": 0.3
+      }
+    },
+    "attempts": [
+      {
+        "attempt": 0,
+        "answer": "Article 32 of the Constitution allows a person to approach the Supreme Court to enforce fundamental rights [4]. The provided passages do not contain information about which article gives the High Courts a similar power.",
+        "sentences": [
+          {
+            "index": 0,
+            "text": "Article 32 of the Constitution allows a person to approach the Supreme Court to enforce fundamental rights [4].",
+            "citation_numbers": [
+              4
+            ],
+            "status": "unsupported"
+          },
+          {
+            "index": 1,
+            "text": "The provided passages do not contain information about which article gives the High Courts a similar power.",
+            "citation_numbers": [],
+            "status": null
+          }
+        ],
+        "invalid_citations": [],
+        "num_context_chunks": 4,
+        "verification": {
+          "claims": [
+            {
+              "claim_id": "a0c0",
+              "text": "Article 32 of the Constitution allows a person to approach the Supreme Court to enforce fundamental rights.",
+              "sentence_index": 0,
+              "citations": [
+                4
+              ],
+              "status": "unsupported",
+              "citation_status": "incorrect",
+              "failure": "contradicted",
+              "method": "nli_threshold",
+              "evidence": {
+                "citation_number": 4,
+                "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00086",
+                "filename": "constitution_of_india.pdf",
+                "page": null,
+                "section_label": "Constitution of India, Article 32",
+                "text": "(3) Without prejudice to the powers conferred on the Supreme Court by clauses (1) and (2), Parliament may by law empower any other court to exercise within the local limits of its jurisdiction all or any of the powers exercisable by the Supreme Court under clause (2). (4) The right guaranteed by this article shall not be suspended except as otherwise provided for by this Constitution. 132A. [ Constitutional validity of State laws not to be considered in proceedings under article 32.].—Omitted by the Constitution (Forty-third Amendment) Act, 1977, s. 3 (w.e.f.",
+                "similarity": 0.7143,
+                "entailment": 0.2448,
+                "neutral": 0.7329,
+                "contradiction": 0.0224
+              },
+              "suggested_citation": null,
+              "judge_rationale": null,
+              "judge_quote": null,
+              "judge_quote_verified": null
+            }
+          ],
+          "support_score": 0.0,
+          "citation_accuracy": 0.0,
+          "num_supported": 0,
+          "num_partial": 0,
+          "num_unsupported": 1,
+          "passed": false,
+          "abstained": false,
+          "extraction_fallback": false,
+          "nli_model": "cross-encoder/nli-roberta-base",
+          "latency_ms": 4961.925100011285,
+          "timings_ms": {
+            "embedding": 96.9,
+            "nli": 4864.3,
+            "nli_pairs": 11.0,
+            "judge": 0.3
+          }
+        },
+        "latency_ms": 7393.599700008053,
+        "cumulative_latency_ms": 7504.180899995845,
+        "cumulative_input_tokens": 1450,
+        "cumulative_output_tokens": 40,
+        "cumulative_cost_usd": 0.0
+      }
+    ],
+    "selected_attempt": 0,
+    "refinements": [],
+    "uncertainty": {
+      "flagged": true,
+      "notice": "1 statement(s) could not be verified against the retrieved documents and were removed from the answer.",
+      "unsupported_claims": [
+        "Article 32 of the Constitution allows a person to approach the Supreme Court to enforce fundamental rights."
+      ],
+      "removed_sentences": [
+        "Article 32 of the Constitution allows a person to approach the Supreme Court to enforce fundamental rights [4]."
+      ]
+    },
+    "budget": {
+      "ceiling_usd": 0.001,
+      "spent_usd": 0.0,
+      "skipped_steps": []
+    },
+    "usage": {
+      "stages": [
+        {
+          "stage": "query_embedding",
+          "model": "local:BAAI/bge-small-en-v1.5",
+          "input_tokens": 29,
+          "output_tokens": 0,
+          "estimated": true,
+          "cost_usd": 0.0
+        },
+        {
+          "stage": "generation",
+          "model": "gemini-2.5-flash",
+          "input_tokens": 639,
+          "output_tokens": 40,
+          "estimated": false,
+          "cost_usd": 0.0
+        },
+        {
+          "stage": "verification_embedding",
+          "model": "local:BAAI/bge-small-en-v1.5",
+          "input_tokens": 763,
+          "output_tokens": 0,
+          "estimated": true,
+          "cost_usd": 0.0
+        },
+        {
+          "stage": "verification_embedding",
+          "model": "local:BAAI/bge-small-en-v1.5",
+          "input_tokens": 19,
+          "output_tokens": 0,
+          "estimated": true,
+          "cost_usd": 0.0
+        }
+      ],
+      "input_tokens": 1450,
+      "output_tokens": 40,
+      "cost_usd": 0.0
+    },
+    "timings_ms": {
+      "retrieval": 104.79040001519024,
+      "generation": 979.4911000062712,
+      "claim_extraction": 1449.0163000300527,
+      "verification": 4962.076700001489,
+      "total": 7506.089000031352
+    },
+    "total_latency_ms": 7506.089000031352,
+    "models": {
+      "chat": "gemini-2.5-flash",
+      "embedding": "local:BAAI/bge-small-en-v1.5",
+      "nli": "cross-encoder/nli-roberta-base"
+    },
+    "config": {
+      "chunking": {
+        "chunk_size": 1000,
+        "chunk_overlap": 150
+      },
+      "baseline": {
+        "top_k": 4
+      },
+      "generation": {
+        "max_answer_tokens": 250
+      },
+      "proposed": {
+        "adaptive": false,
+        "verify": true
+      },
+      "complexity": {
+        "weights": {
+          "information_needs": 0.35,
+          "reasoning": 0.25,
+          "multi_source": 0.15,
+          "lexical": 0.15,
+          "llm_label": 0.1
+        },
+        "reasoning_scores": {
+          "lookup": 0.0,
+          "aggregation": 0.5,
+          "temporal": 0.5,
+          "comparison": 0.6,
+          "causal": 0.7,
+          "bridge": 1.0
+        },
+        "simple_max": 0.33,
+        "moderate_max": 0.66,
+        "max_tokens": 500
+      },
+      "adaptive": {
+        "k_simple": {
+          "min": 1,
+          "max": 3
+        },
+        "k_moderate": {
+          "min": 4,
+          "max": 7
+        },
+        "k_complex": {
+          "min": 8,
+          "max": 12
+        },
+        "k_cap": 15,
+        "decompose": true,
+        "max_subqueries": 4,
+        "rrf_k": 60,
+        "score_floor": 0.15,
+        "score_ceiling": 0.65,
+        "relevance_threshold": 0.4,
+        "confidence_weight_top1": 0.5,
+        "confidence_weight_mean": 0.2,
+        "confidence_weight_coverage": 0.3,
+        "confidence_threshold": 0.5,
+        "max_expansions": 1,
+        "expansion_step": 3
+      },
+      "verification": {
+        "nli_model": "cross-encoder/nli-roberta-base",
+        "window_sentences": 3,
+        "candidate_windows": 3,
+        "support_threshold": 0.75,
+        "contradiction_threshold": 0.75,
+        "partial_threshold": 0.4,
+        "use_llm_judge": false,
+        "pass_support_score": 0.9,
+        "max_claims": 6,
+        "max_retries": 0,
+        "refine_k": 3,
+        "max_tokens": 900,
+        "llm_claims": false
+      },
+      "budget": {
+        "max_cost_usd": 0.001
+      },
+      "pricing": {
+        "gpt-4o-mini": {
+          "input_per_million": 0.15,
+          "output_per_million": 0.6
+        },
+        "gpt-4o": {
+          "input_per_million": 2.5,
+          "output_per_million": 10.0
+        },
+        "gpt-4.1": {
+          "input_per_million": 2.0,
+          "output_per_million": 8.0
+        },
+        "gpt-4.1-mini": {
+          "input_per_million": 0.4,
+          "output_per_million": 1.6
+        },
+        "text-embedding-3-small": {
+          "input_per_million": 0.02,
+          "output_per_million": 0.0
+        },
+        "text-embedding-3-large": {
+          "input_per_million": 0.13,
+          "output_per_million": 0.0
+        }
+      }
+    },
+    "cached": false,
+    "cached_from": null,
+    "served_ms": null
+  }
+}

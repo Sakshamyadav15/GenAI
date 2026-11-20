@@ -16,7 +16,7 @@ from langchain_core.messages import BaseMessage, HumanMessage
 from pydantic import BaseModel, ValidationError
 
 from app.core.errors import AppError
-from app.core.llm import message_text
+from app.core.llm import json_kwargs, limit_kwargs, message_text
 from app.core.usage import UsageTracker
 
 T = TypeVar("T", bound=BaseModel)
@@ -45,7 +45,7 @@ async def structured_call(
     max_tokens: int = 800,
     attempts: int = 2,
 ) -> T:
-    bound = model.bind(response_format={"type": "json_object"}, max_tokens=max_tokens)
+    bound = model.bind(**json_kwargs(model), **limit_kwargs(model, max_tokens))
     conversation = list(messages)
     error: ValidationError | None = None
     for _ in range(attempts):

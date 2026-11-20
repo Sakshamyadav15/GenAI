@@ -20,6 +20,7 @@ def to_retrieved_chunks(hits: Sequence[SearchHit], retrieved_by: str = "original
             rank=rank,
             citation_number=rank,
             retrieved_by=retrieved_by,
+            section_label=h.chunk.section_label,
         )
         for rank, h in enumerate(hits, start=1)
     ]
@@ -34,6 +35,7 @@ def build_citations(parsed: ParsedCitations, chunks: Sequence[RetrievedChunk]) -
             doc_id=by_number[n].doc_id,
             filename=by_number[n].filename,
             page=by_number[n].page,
+            label=by_number[n].section_label,
         )
         for n in parsed.cited
     ]

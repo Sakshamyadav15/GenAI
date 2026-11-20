@@ -1,0 +1,554 @@
+{
+  "version": 1,
+  "key": "7b004f7f51c2200e8426917a0cb92f16d9d9e525ce7adda320212fb86f949eea",
+  "question": "What does Article 21 of the Constitution of India protect?",
+  "pipeline": "proposed",
+  "corpus": "indian_acts",
+  "overrides": {},
+  "corpus_fingerprint": [
+    "6fc2598198bfe22d76513530339f19da0cd79a947904f25cf1c9a1ea380be081",
+    "819ba7adc5e5ae4063f26c82472283ba682ddb662e5a7f864cf26984d99b26ed"
+  ],
+  "recorded_at": "2026-11-05T13:23:17.452600Z",
+  "response": {
+    "query_id": "d9a9712913ef4d2fb6901a707d11429e",
+    "created_at": "2026-11-05T13:23:17.452600Z",
+    "pipeline": "proposed",
+    "variant": {
+      "adaptive": false,
+      "decompose": false,
+      "verify": true
+    },
+    "corpus": "indian_acts",
+    "question": "What does Article 21 of the Constitution of India protect?",
+    "answer": "Article 21 of the Constitution of India protects life and personal liberty [1]. It states that no person shall be deprived of life or personal liberty except according to procedure established by law [1]. Additionally, Article 21A, which is part of Article 21, establishes the right to education, requiring the State to provide free and compulsory education to all children aged six to fourteen years [1].",
+    "citations": [
+      {
+        "number": 1,
+        "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00048",
+        "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+        "filename": "constitution_of_india.pdf",
+        "page": null,
+        "label": "Constitution of India, Article 21"
+      }
+    ],
+    "sentences": [
+      {
+        "index": 0,
+        "text": "Article 21 of the Constitution of India protects life and personal liberty [1].",
+        "citation_numbers": [
+          1
+        ],
+        "status": "supported"
+      },
+      {
+        "index": 1,
+        "text": "It states that no person shall be deprived of life or personal liberty except according to procedure established by law [1].",
+        "citation_numbers": [
+          1
+        ],
+        "status": "supported"
+      },
+      {
+        "index": 2,
+        "text": "Additionally, Article 21A, which is part of Article 21, establishes the right to education, requiring the State to provide free and compulsory education to all children aged six to fourteen years [1].",
+        "citation_numbers": [
+          1
+        ],
+        "status": "supported"
+      }
+    ],
+    "invalid_citations": [],
+    "retrieval": {
+      "strategy": "fixed_top_k",
+      "k_requested": 4,
+      "k_final": 4,
+      "num_retrieved": 4,
+      "latency_ms": 83.76860001590103,
+      "embedding_latency_ms": 75.89199999347329,
+      "search_latency_ms": 7.876600022427738,
+      "queries": [
+        "What does Article 21 of the Constitution of India protect?"
+      ],
+      "confidence": null,
+      "expansions": 0,
+      "chunks": [
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00048",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 48,
+          "text": "Constitution of India, Article 21. Protection of life and personal liberty\n21. Protection of life and personal liberty. —No person shall be deprived of his life or personal liberty except according to procedure established by law. 2[21A. Right to education. —The State shall provide free and compulsory education to all children of the age of six to fourteen years in such manner as the State may, by law, determine.]",
+          "score": 0.7852599620819092,
+          "rank": 1,
+          "citation_number": 1,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 21"
+        },
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00046",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 46,
+          "text": "Constitution of India, Article 19. Protection of certain rights regarding freedom of speech, etc\nby the State, or by a corporation owned or controlled by the State, of any trade, business, industry or service, whether to the exclusion, complete or partial, of citizens or otherwise.]",
+          "score": 0.7621434926986694,
+          "rank": 2,
+          "citation_number": 2,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 19"
+        },
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00056",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 56,
+          "text": "Constitution of India, Article 22. Protection against arrest and detention in certain cases\nTHE CONSTITUTION OF INDIA (Part III.—Fundamental Rights) Provided that nothing in this sub-clause shall authorise the detention of any person beyond the maximum period prescribed by any law made by Parliament under sub-clause (b) of clause (7); or (b) such person is detained in accordance with the provisions of any law made by Parliament under sub-clauses (a) and (b) of clause (7).",
+          "score": 0.7575324773788452,
+          "rank": 3,
+          "citation_number": 3,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 22"
+        },
+        {
+          "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00039",
+          "doc_id": "19c7b0f1957e4f4dab184e5443babf15",
+          "filename": "constitution_of_india.pdf",
+          "page": null,
+          "chunk_index": 39,
+          "text": "Constitution of India, Article 19. Protection of certain rights regarding freedom of speech, etc\n19. Protection of certain rights regarding freedom of speech, etc. — (1) All citizens shall have the right— (a) to freedom of speech and expression; (b) to assemble peaceably and without arms; (c) to form associations or unions2[or co-operative societies]; (d) to move freely throughout the territory of India; ______________________________________________ 1. Ins. by the Constitution (One Hundred and Third Amendment) Act, 2019, s. 3 (w.e.f. 14-1-2019). 2. Ins. by the Constitution (Ninety-seventh Amendment) Act, 2011, s. 2 (w.e.f. 8-2-2012).",
+          "score": 0.7507637739181519,
+          "rank": 4,
+          "citation_number": 4,
+          "retrieved_by": "original_query",
+          "section_label": "Constitution of India, Article 19"
+        }
+      ]
+    },
+    "complexity": null,
+    "verification": {
+      "claims": [
+        {
+          "claim_id": "a0c0",
+          "text": "Article 21 of the Constitution of India protects life and personal liberty.",
+          "sentence_index": 0,
+          "citations": [
+            1
+          ],
+          "status": "supported",
+          "citation_status": "correct",
+          "failure": null,
+          "method": "nli",
+          "evidence": {
+            "citation_number": 1,
+            "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00048",
+            "filename": "constitution_of_india.pdf",
+            "page": null,
+            "section_label": "Constitution of India, Article 21",
+            "text": "Constitution of India, Article 21. Protection of life and personal liberty 21.",
+            "similarity": 0.9663,
+            "entailment": 0.9918,
+            "neutral": 0.0076,
+            "contradiction": 0.0005
+          },
+          "suggested_citation": null,
+          "judge_rationale": null,
+          "judge_quote": null,
+          "judge_quote_verified": null
+        },
+        {
+          "claim_id": "a0c1",
+          "text": "It states that no person shall be deprived of life or personal liberty except according to procedure established by law.",
+          "sentence_index": 1,
+          "citations": [
+            1
+          ],
+          "status": "supported",
+          "citation_status": "correct",
+          "failure": null,
+          "method": "nli",
+          "evidence": {
+            "citation_number": 1,
+            "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00048",
+            "filename": "constitution_of_india.pdf",
+            "page": null,
+            "section_label": "Constitution of India, Article 21",
+            "text": "Protection of life and personal liberty. —No person shall be deprived of his life or personal liberty except according to procedure established by law. 2[21A. Right to education.",
+            "similarity": 0.7956,
+            "entailment": 0.9905,
+            "neutral": 0.0079,
+            "contradiction": 0.0016
+          },
+          "suggested_citation": null,
+          "judge_rationale": null,
+          "judge_quote": null,
+          "judge_quote_verified": null
+        },
+        {
+          "claim_id": "a0c2",
+          "text": "Additionally, Article 21A, which is part of Article 21, establishes the right to education, requiring the State to provide free and compulsory education to all children aged six to fourteen years.",
+          "sentence_index": 2,
+          "citations": [
+            1
+          ],
+          "status": "supported",
+          "citation_status": "correct",
+          "failure": null,
+          "method": "nli",
+          "evidence": {
+            "citation_number": 1,
+            "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00048",
+            "filename": "constitution_of_india.pdf",
+            "page": null,
+            "section_label": "Constitution of India, Article 21",
+            "text": "—No person shall be deprived of his life or personal liberty except according to procedure established by law. 2[21A. Right to education. —The State shall provide free and compulsory education to all children of the age of six to fourteen years in such manner as the State may, by law, determine.]",
+            "similarity": 0.8365,
+            "entailment": 0.9728,
+            "neutral": 0.0233,
+            "contradiction": 0.0039
+          },
+          "suggested_citation": null,
+          "judge_rationale": null,
+          "judge_quote": null,
+          "judge_quote_verified": null
+        }
+      ],
+      "support_score": 1.0,
+      "citation_accuracy": 1.0,
+      "num_supported": 3,
+      "num_partial": 0,
+      "num_unsupported": 0,
+      "passed": true,
+      "abstained": false,
+      "extraction_fallback": false,
+      "nli_model": "cross-encoder/nli-roberta-base",
+      "latency_ms": 2351.573800027836,
+      "timings_ms": {
+        "embedding": 198.0,
+        "nli": 2151.8,
+        "nli_pairs": 9.0,
+        "judge": 0.3
+      }
+    },
+    "attempts": [
+      {
+        "attempt": 0,
+        "answer": "Article 21 of the Constitution of India protects life and personal liberty [1]. It states that no person shall be deprived of life or personal liberty except according to procedure established by law [1]. Additionally, Article 21A, which is part of Article 21, establishes the right to education, requiring the State to provide free and compulsory education to all children aged six to fourteen years [1].",
+        "sentences": [
+          {
+            "index": 0,
+            "text": "Article 21 of the Constitution of India protects life and personal liberty [1].",
+            "citation_numbers": [
+              1
+            ],
+            "status": "supported"
+          },
+          {
+            "index": 1,
+            "text": "It states that no person shall be deprived of life or personal liberty except according to procedure established by law [1].",
+            "citation_numbers": [
+              1
+            ],
+            "status": "supported"
+          },
+          {
+            "index": 2,
+            "text": "Additionally, Article 21A, which is part of Article 21, establishes the right to education, requiring the State to provide free and compulsory education to all children aged six to fourteen years [1].",
+            "citation_numbers": [
+              1
+            ],
+            "status": "supported"
+          }
+        ],
+        "invalid_citations": [],
+        "num_context_chunks": 4,
+        "verification": {
+          "claims": [
+            {
+              "claim_id": "a0c0",
+              "text": "Article 21 of the Constitution of India protects life and personal liberty.",
+              "sentence_index": 0,
+              "citations": [
+                1
+              ],
+              "status": "supported",
+              "citation_status": "correct",
+              "failure": null,
+              "method": "nli",
+              "evidence": {
+                "citation_number": 1,
+                "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00048",
+                "filename": "constitution_of_india.pdf",
+                "page": null,
+                "section_label": "Constitution of India, Article 21",
+                "text": "Constitution of India, Article 21. Protection of life and personal liberty 21.",
+                "similarity": 0.9663,
+                "entailment": 0.9918,
+                "neutral": 0.0076,
+                "contradiction": 0.0005
+              },
+              "suggested_citation": null,
+              "judge_rationale": null,
+              "judge_quote": null,
+              "judge_quote_verified": null
+            },
+            {
+              "claim_id": "a0c1",
+              "text": "It states that no person shall be deprived of life or personal liberty except according to procedure established by law.",
+              "sentence_index": 1,
+              "citations": [
+                1
+              ],
+              "status": "supported",
+              "citation_status": "correct",
+              "failure": null,
+              "method": "nli",
+              "evidence": {
+                "citation_number": 1,
+                "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00048",
+                "filename": "constitution_of_india.pdf",
+                "page": null,
+                "section_label": "Constitution of India, Article 21",
+                "text": "Protection of life and personal liberty. —No person shall be deprived of his life or personal liberty except according to procedure established by law. 2[21A. Right to education.",
+                "similarity": 0.7956,
+                "entailment": 0.9905,
+                "neutral": 0.0079,
+                "contradiction": 0.0016
+              },
+              "suggested_citation": null,
+              "judge_rationale": null,
+              "judge_quote": null,
+              "judge_quote_verified": null
+            },
+            {
+              "claim_id": "a0c2",
+              "text": "Additionally, Article 21A, which is part of Article 21, establishes the right to education, requiring the State to provide free and compulsory education to all children aged six to fourteen years.",
+              "sentence_index": 2,
+              "citations": [
+                1
+              ],
+              "status": "supported",
+              "citation_status": "correct",
+              "failure": null,
+              "method": "nli",
+              "evidence": {
+                "citation_number": 1,
+                "chunk_id": "19c7b0f1957e4f4dab184e5443babf15:00048",
+                "filename": "constitution_of_india.pdf",
+                "page": null,
+                "section_label": "Constitution of India, Article 21",
+                "text": "—No person shall be deprived of his life or personal liberty except according to procedure established by law. 2[21A. Right to education. —The State shall provide free and compulsory education to all children of the age of six to fourteen years in such manner as the State may, by law, determine.]",
+                "similarity": 0.8365,
+                "entailment": 0.9728,
+                "neutral": 0.0233,
+                "contradiction": 0.0039
+              },
+              "suggested_citation": null,
+              "judge_rationale": null,
+              "judge_quote": null,
+              "judge_quote_verified": null
+            }
+          ],
+          "support_score": 1.0,
+          "citation_accuracy": 1.0,
+          "num_supported": 3,
+          "num_partial": 0,
+          "num_unsupported": 0,
+          "passed": true,
+          "abstained": false,
+          "extraction_fallback": false,
+          "nli_model": "cross-encoder/nli-roberta-base",
+          "latency_ms": 2351.573800027836,
+          "timings_ms": {
+            "embedding": 198.0,
+            "nli": 2151.8,
+            "nli_pairs": 9.0,
+            "judge": 0.3
+          }
+        },
+        "latency_ms": 5331.3935000333,
+        "cumulative_latency_ms": 5423.23260003468,
+        "cumulative_input_tokens": 1500,
+        "cumulative_output_tokens": 83,
+        "cumulative_cost_usd": 0.0
+      }
+    ],
+    "selected_attempt": 0,
+    "refinements": [],
+    "uncertainty": {
+      "flagged": false,
+      "notice": null,
+      "unsupported_claims": [],
+      "removed_sentences": []
+    },
+    "budget": {
+      "ceiling_usd": 0.001,
+      "spent_usd": 0.0,
+      "skipped_steps": []
+    },
+    "usage": {
+      "stages": [
+        {
+          "stage": "query_embedding",
+          "model": "local:BAAI/bge-small-en-v1.5",
+          "input_tokens": 12,
+          "output_tokens": 0,
+          "estimated": true,
+          "cost_usd": 0.0
+        },
+        {
+          "stage": "generation",
+          "model": "gemini-2.5-flash",
+          "input_tokens": 647,
+          "output_tokens": 83,
+          "estimated": false,
+          "cost_usd": 0.0
+        },
+        {
+          "stage": "verification_embedding",
+          "model": "local:BAAI/bge-small-en-v1.5",
+          "input_tokens": 767,
+          "output_tokens": 0,
+          "estimated": true,
+          "cost_usd": 0.0
+        },
+        {
+          "stage": "verification_embedding",
+          "model": "local:BAAI/bge-small-en-v1.5",
+          "input_tokens": 74,
+          "output_tokens": 0,
+          "estimated": true,
+          "cost_usd": 0.0
+        }
+      ],
+      "input_tokens": 1500,
+      "output_tokens": 83,
+      "cost_usd": 0.0
+    },
+    "timings_ms": {
+      "retrieval": 83.96299998275936,
+      "generation": 1230.4826999898069,
+      "claim_extraction": 1745.0089000049047,
+      "verification": 2352.1566999843344,
+      "total": 5425.968300027307
+    },
+    "total_latency_ms": 5425.968300027307,
+    "models": {
+      "chat": "gemini-2.5-flash",
+      "embedding": "local:BAAI/bge-small-en-v1.5",
+      "nli": "cross-encoder/nli-roberta-base"
+    },
+    "config": {
+      "chunking": {
+        "chunk_size": 1000,
+        "chunk_overlap": 150
+      },
+      "baseline": {
+        "top_k": 4
+      },
+      "generation": {
+        "max_answer_tokens": 250
+      },
+      "proposed": {
+        "adaptive": false,
+        "verify": true
+      },
+      "complexity": {
+        "weights": {
+          "information_needs": 0.35,
+          "reasoning": 0.25,
+          "multi_source": 0.15,
+          "lexical": 0.15,
+          "llm_label": 0.1
+        },
+        "reasoning_scores": {
+          "lookup": 0.0,
+          "aggregation": 0.5,
+          "temporal": 0.5,
+          "comparison": 0.6,
+          "causal": 0.7,
+          "bridge": 1.0
+        },
+        "simple_max": 0.33,
+        "moderate_max": 0.66,
+        "max_tokens": 500
+      },
+      "adaptive": {
+        "k_simple": {
+          "min": 1,
+          "max": 3
+        },
+        "k_moderate": {
+          "min": 4,
+          "max": 7
+        },
+        "k_complex": {
+          "min": 8,
+          "max": 12
+        },
+        "k_cap": 15,
+        "decompose": true,
+        "max_subqueries": 4,
+        "rrf_k": 60,
+        "score_floor": 0.15,
+        "score_ceiling": 0.65,
+        "relevance_threshold": 0.4,
+        "confidence_weight_top1": 0.5,
+        "confidence_weight_mean": 0.2,
+        "confidence_weight_coverage": 0.3,
+        "confidence_threshold": 0.5,
+        "max_expansions": 1,
+        "expansion_step": 3
+      },
+      "verification": {
+        "nli_model": "cross-encoder/nli-roberta-base",
+        "window_sentences": 3,
+        "candidate_windows": 3,
+        "support_threshold": 0.75,
+        "contradiction_threshold": 0.75,
+        "partial_threshold": 0.4,
+        "use_llm_judge": false,
+        "pass_support_score": 0.9,
+        "max_claims": 6,
+        "max_retries": 0,
+        "refine_k": 3,
+        "max_tokens": 900,
+        "llm_claims": false
+      },
+      "budget": {
+        "max_cost_usd": 0.001
+      },
+      "pricing": {
+        "gpt-4o-mini": {
+          "input_per_million": 0.15,
+          "output_per_million": 0.6
+        },
+        "gpt-4o": {
+          "input_per_million": 2.5,
+          "output_per_million": 10.0
+        },
+        "gpt-4.1": {
+          "input_per_million": 2.0,
+          "output_per_million": 8.0
+        },
+        "gpt-4.1-mini": {
+          "input_per_million": 0.4,
+          "output_per_million": 1.6
+        },
+        "text-embedding-3-small": {
+          "input_per_million": 0.02,
+          "output_per_million": 0.0
+        },
+        "text-embedding-3-large": {
+          "input_per_million": 0.13,
+          "output_per_million": 0.0
+        }
+      }
+    },
+    "cached": false,
+    "cached_from": null,
+    "served_ms": null
+  }
+}

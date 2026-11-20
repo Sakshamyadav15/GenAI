@@ -41,7 +41,7 @@ export function TraceView({
       <>
         {header}
         <Empty>
-          No questions have been asked yet. <Link className="font-medium text-indigo-700 hover:underline" to="/">Ask one in Chat</Link> and its trace will appear here.
+          No research questions have been asked yet. <Link className="font-medium text-indigo-700 hover:underline" to="/">Ask one under Research</Link> and its trace will appear here.
         </Empty>
       </>
     );

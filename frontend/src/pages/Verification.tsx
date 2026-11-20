@@ -1,5 +1,5 @@
 import { TraceView } from '../components/TraceView';
-import { Badge, Bar, Card, Empty, Stat, ms, sourceLabel, statusTone } from '../components/ui';
+import { Badge, Bar, Card, Empty, Stat, legalStatusLabel, ms, sourceLabel, statusTone } from '../components/ui';
 import type { Attempt, ClaimVerification, QueryResponse } from '../types';
 
 function ClaimCard({ claim }: { claim: ClaimVerification }) {
@@ -13,10 +13,10 @@ function ClaimCard({ claim }: { claim: ClaimVerification }) {
       }`}
     >
       <div className="flex flex-wrap items-center gap-2">
-        <Badge tone={statusTone(claim.status)}>{claim.status}</Badge>
+        <Badge tone={statusTone(claim.status)}>{legalStatusLabel(claim.status)}</Badge>
         <Badge>{claim.method}</Badge>
         <Badge tone={claim.citation_status === 'correct' ? 'supported' : claim.citation_status === 'misattributed' ? 'partial' : 'unsupported'}>
-          citation {claim.citation_status}
+          citation: {claim.citation_status}
         </Badge>
         {claim.failure && <Badge tone="unsupported">{claim.failure.replace('_', ' ')}</Badge>}
         <span className="text-xs text-slate-500">
@@ -28,7 +28,7 @@ function ClaimCard({ claim }: { claim: ClaimVerification }) {
       {ev && (
         <div className="mt-2 rounded-md bg-slate-100 p-2">
           <div className="mb-1 text-xs text-slate-500">
-            Evidence: [{ev.citation_number}] {sourceLabel(ev.filename, ev.page)} · similarity {ev.similarity.toFixed(3)}
+            Evidence: [{ev.citation_number}] {sourceLabel(ev.filename, ev.page, ev.section_label)} · similarity {ev.similarity.toFixed(3)}
           </div>
           <p className="text-xs italic">“{ev.text}”</p>
           <div className="mt-2 space-y-1">
@@ -38,7 +38,7 @@ function ClaimCard({ claim }: { claim: ClaimVerification }) {
           </div>
         </div>
       )}
-      {!ev && claim.status === 'unsupported' && <p className="mt-2 text-xs text-red-700">No supporting evidence found in the retrieved passages.</p>}
+      {!ev && claim.status === 'unsupported' && <p className="mt-2 text-xs text-red-700">No supporting passage found in the retrieved authorities.</p>}
       {claim.judge_rationale && (
         <p className="mt-2 text-xs text-slate-600">
           Judge: {claim.judge_rationale}
@@ -80,11 +80,11 @@ function AttemptCard({ attempt, selected, refinement }: { attempt: Attempt; sele
           <div className="mb-3 grid grid-cols-2 gap-2 md:grid-cols-5">
             <Stat label="Support score" value={v.support_score.toFixed(2)} />
             <Stat label="Citation accuracy" value={v.citation_accuracy == null ? 'n/a' : v.citation_accuracy.toFixed(2)} />
-            <Stat label="Supported / partial / unsupported" value={`${v.num_supported} / ${v.num_partial} / ${v.num_unsupported}`} />
+            <Stat label="Supported / partly / not supported" value={`${v.num_supported} / ${v.num_partial} / ${v.num_unsupported}`} />
             <Stat label="Verification time" value={ms(v.latency_ms)} />
             <Stat label="Cumulative" value={ms(attempt.cumulative_latency_ms)} hint={`${attempt.cumulative_input_tokens + attempt.cumulative_output_tokens} tokens`} />
           </div>
-          {v.abstained && <Empty>The answer made no factual claims (it abstained), so there was nothing to verify.</Empty>}
+          {v.abstained && <Empty>The answer asserted no propositions of law or fact (it declined to answer), so there was nothing to check.</Empty>}
           {v.extraction_fallback && <p className="mb-2 text-xs text-amber-700">Claim extraction fell back to one claim per sentence.</p>}
           <div className="space-y-2">
             {v.claims.map((c) => (
@@ -101,7 +101,7 @@ function AttemptCard({ attempt, selected, refinement }: { attempt: Attempt; sele
 
 function Verification({ r }: { r: QueryResponse }) {
   if (!r.verification) {
-    return <Empty>This run used a pipeline without evidence verification (baseline or adaptive-only variant).</Empty>;
+    return <Empty>This run used a pipeline that does no citation checking (the baseline or an adaptive-only variant).</Empty>;
   }
   return (
     <div className="space-y-4">
@@ -132,5 +132,5 @@ function Verification({ r }: { r: QueryResponse }) {
 }
 
 export default function VerificationPage() {
-  return <TraceView base="verification" title="Evidence Verification" subtitle="Every statement in the answer is checked against the passage it cites. Unsupported statements are flagged and trigger a retry." render={(r) => <Verification r={r} />} />;
+  return <TraceView base="verification" title="Citation checks" subtitle="Every proposition in the answer is checked against the passage it cites. Propositions the cited authority does not support are flagged, and trigger a retry." render={(r) => <Verification r={r} />} />;
 }

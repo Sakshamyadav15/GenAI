@@ -77,14 +77,24 @@ class ClaimExtractor:
         self.model_name = model_name
 
     async def extract(
-        self, sentences: Sequence[CitedSentence], *, max_claims: int, max_tokens: int, usage: UsageTracker, attempt: int
+        self,
+        sentences: Sequence[CitedSentence],
+        *,
+        max_claims: int,
+        max_tokens: int,
+        usage: UsageTracker,
+        attempt: int,
+        use_llm: bool = True,
     ) -> tuple[list[Claim], bool]:
-        """Return (claims, used_fallback)."""
+        """Return (claims, used_fallback). With ``use_llm=False`` every factual sentence is one claim (no LLM call)."""
         factual = [s for s in sentences if strip_citations(s.text) and not is_abstention(s.text)]
         if not factual:
             return [], False
         listing = "\n".join(f"[s{s.index}] {s.text}" for s in sentences)
         by_index = {s.index: s for s in sentences}
+        if not use_llm:
+            extracted = [(strip_citations(s.text), s.index) for s in factual]
+            return self._to_claims(extracted, by_index, max_claims, attempt), False
         try:
             result = await structured_call(
                 self._model,
@@ -102,7 +112,13 @@ class ClaimExtractor:
             extracted = [(strip_citations(s.text), s.index) for s in factual]
             fallback = True
 
-        claims = []
+        return self._to_claims(extracted, by_index, max_claims, attempt), fallback
+
+    @staticmethod
+    def _to_claims(
+        extracted: list[tuple[str, int]], by_index: dict[int, CitedSentence], max_claims: int, attempt: int
+    ) -> list[Claim]:
+        claims: list[Claim] = []
         for text, index in extracted[:max_claims]:
             claims.append(
                 Claim(
@@ -112,4 +128,4 @@ class ClaimExtractor:
                     citations=list(by_index[index].citation_numbers),
                 )
             )
-        return claims, fallback
+        return claims

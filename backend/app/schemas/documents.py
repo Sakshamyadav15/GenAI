@@ -49,6 +49,21 @@ class Chunk(BaseModel):
     chunk_index: int
     char_start: int | None = None
     text: str
+    # Set only for chunks of a statute: lets citations read "Bharatiya Nyaya Sanhita, 2023, Section 103".
+    act: str | None = None
+    section: str | None = None
+    section_title: str | None = None
+    chapter: str | None = None
+
+    @property
+    def section_label(self) -> str | None:
+        if not self.act or not self.section:
+            return None
+        return f"{self.act}, {self.section_kind} {self.section}"
+
+    @property
+    def section_kind(self) -> str:
+        return "Article" if "constitution" in (self.act or "").lower() else "Section"
 
     def vector_metadata(self) -> dict[str, Any]:
         # Chroma metadata values must be str/int/float/bool, so optional fields are omitted when None.
@@ -62,6 +77,10 @@ class Chunk(BaseModel):
             meta["page"] = self.page
         if self.char_start is not None:
             meta["char_start"] = self.char_start
+        for key in ("act", "section", "section_title", "chapter"):
+            value = getattr(self, key)
+            if value is not None:
+                meta[key] = value
         return meta
 
     @classmethod
@@ -75,4 +94,8 @@ class Chunk(BaseModel):
             chunk_index=int(meta["chunk_index"]),
             char_start=meta.get("char_start"),
             text=text,
+            act=meta.get("act"),
+            section=meta.get("section"),
+            section_title=meta.get("section_title"),
+            chapter=meta.get("chapter"),
         )

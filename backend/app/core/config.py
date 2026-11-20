@@ -16,7 +16,16 @@ from pathlib import Path
 from typing import Any, Literal
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Field, SecretStr, ValidationError, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    SecretStr,
+    ValidationError,
+    field_validator,
+    model_serializer,
+    model_validator,
+)
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.core.errors import InvalidConfigError
@@ -38,8 +47,15 @@ class Settings(BaseSettings):
 
     openai_api_key: SecretStr | None = None
     openai_base_url: str | None = None
+    # LLM provider for chat: 'auto' uses Gemini when GEMINI_API_KEY is set, otherwise OpenAI.
+    llm_provider: Literal["openai", "gemini", "auto"] = "openai"
+    gemini_api_key: SecretStr | None = None
+    gemini_model: str = "gemini-2.5-flash-lite"
     chat_model: str = "gpt-4o-mini"
     embedding_model: str = "text-embedding-3-small"
+    # 'local' embeds on this machine (sentence-transformers): free, no API key needed for indexing/search.
+    embedding_provider: Literal["openai", "local"] = "openai"
+    local_embedding_model: str = "BAAI/bge-small-en-v1.5"
     llm_temperature: float = 0.0
     llm_seed: int | None = 42
     llm_timeout_s: float = 60.0
@@ -64,6 +80,20 @@ class Settings(BaseSettings):
     experiments_dir: Path = PROJECT_ROOT / "experiments"
     demo_cache_enabled: bool = True
     demo_cache_dir: Path | None = None  # defaults to backend/seed/demo_cache
+    demo_questions_path: Path | None = None  # defaults to backend/seed/demo_questions.json
+
+    # Indian-Acts research instance: 'legal_acts' only changes what the UI says; behaviour comes from the
+    # settings below. legal_budget_mode applies BUDGET_PRESET as the default pipeline configuration.
+    instance_mode: Literal["general", "legal_acts"] = "general"
+    legal_budget_mode: bool = False
+
+    @field_validator(
+        "demo_questions_path", "demo_cache_dir", "pipeline_config_path", "chroma_dir", "upload_dir", mode="before"
+    )
+    @classmethod
+    def _empty_path_means_unset(cls, value: Any) -> Any:
+        # `NAME=` (or `NAME=  # comment`) in a .env file yields "", which would otherwise become the path ".".
+        return None if isinstance(value, str) and not value.strip() else value
 
     @model_validator(mode="after")
     def _derive_paths(self) -> Settings:
@@ -80,8 +110,31 @@ class Settings(BaseSettings):
         return self
 
     @property
+    def embedding_label(self) -> str:
+        """Model name reported in traces; the ``local:`` prefix marks it as free of API cost."""
+        if self.embedding_provider == "local":
+            return f"local:{self.local_embedding_model}"
+        return self.embedding_model
+
+    @staticmethod
+    def _has(secret: SecretStr | None) -> bool:
+        return secret is not None and bool(secret.get_secret_value().strip())
+
+    @property
+    def resolved_llm_provider(self) -> Literal["openai", "gemini"]:
+        if self.llm_provider == "auto":
+            return "gemini" if self._has(self.gemini_api_key) else "openai"
+        return self.llm_provider
+
+    @property
+    def active_chat_model(self) -> str:
+        """Name of the chat model actually used; it appears in traces and keys the demo cache."""
+        return self.gemini_model if self.resolved_llm_provider == "gemini" else self.chat_model
+
+    @property
     def llm_configured(self) -> bool:
-        return self.openai_api_key is not None and bool(self.openai_api_key.get_secret_value().strip())
+        key = self.gemini_api_key if self.resolved_llm_provider == "gemini" else self.openai_api_key
+        return self._has(key)
 
 
 @lru_cache
@@ -205,6 +258,17 @@ class VerificationConfig(_StrictModel):
     max_retries: int = Field(2, ge=0, le=5)
     refine_k: int = Field(3, ge=1, description="Chunks retrieved per unsupported claim during refinement.")
     max_tokens: int = Field(900, ge=100)
+    llm_claims: bool = Field(
+        True, description="Split the answer into atomic claims with the LLM; False uses one claim per sentence (no LLM call)."
+    )
+
+    @model_serializer(mode="wrap")
+    def _omit_default_llm_claims(self, handler: Any) -> dict[str, Any]:
+        # Keeps the serialised config identical to configs recorded before this option existed.
+        data = handler(self)
+        if data.get("llm_claims") is True:
+            data.pop("llm_claims", None)
+        return data
 
     @model_validator(mode="after")
     def _ordered(self) -> VerificationConfig:
@@ -218,6 +282,13 @@ class ProposedConfig(_StrictModel):
 
     adaptive: bool = True
     verify: bool = True
+
+
+class BudgetConfig(_StrictModel):
+    """Hard per-query spending ceiling. Optional steps (claim verification, retries) are skipped when the
+    estimated cost would cross it, and the skip is recorded in the response."""
+
+    max_cost_usd: float | None = Field(None, gt=0)
 
 
 class ModelPrice(_StrictModel):
@@ -246,17 +317,55 @@ class PipelineConfig(_StrictModel):
     complexity: ComplexityConfig = Field(default_factory=ComplexityConfig)
     adaptive: AdaptiveConfig = Field(default_factory=AdaptiveConfig)
     verification: VerificationConfig = Field(default_factory=VerificationConfig)
+    budget: BudgetConfig | None = None
     pricing: dict[str, ModelPrice] = Field(default_factory=_default_pricing)
 
+    @model_serializer(mode="wrap")
+    def _omit_unset_budget(self, handler: Any) -> dict[str, Any]:
+        # Keeps the serialised config identical to configs recorded before ``budget`` existed.
+        data = handler(self)
+        if data.get("budget") is None:
+            data.pop("budget", None)
+        return data
+
     def with_overrides(self, overrides: dict[str, Any] | None) -> PipelineConfig:
-        """Return a copy with ``overrides`` deep-merged in, re-validated as a whole."""
+        """Return a copy with ``overrides`` deep-merged in, re-validated as a whole.
+
+        ``{"preset": "budget"}`` first applies BUDGET_PRESET; other keys in the same dict then override it.
+        """
         if not overrides:
             return self
-        merged = _deep_merge(self.model_dump(), overrides)
+        overrides = dict(overrides)
+        base = self.model_dump()
+        preset = overrides.pop("preset", None)
+        if preset is not None:
+            if preset != "budget":
+                raise InvalidConfigError(f"Unknown preset '{preset}'. Available: 'budget'")
+            base = _deep_merge(base, BUDGET_PRESET)
+        merged = _deep_merge(base, overrides)
         try:
             return PipelineConfig.model_validate(merged)
         except ValidationError as exc:
             raise InvalidConfigError(f"Invalid pipeline overrides: {exc}") from exc
+
+
+# Low-cost configuration for the Indian-Acts instance: fixed top-4 retrieval, short answers, local NLI
+# verification only (no LLM judge, no retries) and a hard USD 0.001 ceiling per question.
+FAST_NLI_MODEL = "cross-encoder/nli-roberta-base"  # quick on CPU; used for live questions
+
+BUDGET_PRESET: dict[str, Any] = {
+    "proposed": {"adaptive": False, "verify": True},
+    "baseline": {"top_k": 4},
+    "generation": {"max_answer_tokens": 250},
+    "verification": {
+        "use_llm_judge": False,
+        "max_retries": 0,
+        "max_claims": 6,
+        "nli_model": FAST_NLI_MODEL,
+        "llm_claims": False,  # one claim per sentence: a question then needs a single LLM call
+    },
+    "budget": {"max_cost_usd": 0.001},
+}
 
 
 def _deep_merge(base: dict[str, Any], updates: dict[str, Any]) -> dict[str, Any]:

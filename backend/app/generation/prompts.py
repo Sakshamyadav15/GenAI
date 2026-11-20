@@ -35,7 +35,8 @@ Rules:
 def format_context(chunks: Sequence[ContextPassage]) -> str:
     blocks = []
     for number, chunk in enumerate(chunks, start=1):
-        source = chunk.filename if chunk.page is None else f"{chunk.filename}, page {chunk.page}"
+        label = getattr(chunk, "section_label", None)
+        source = label or (chunk.filename if chunk.page is None else f"{chunk.filename}, page {chunk.page}")
         blocks.append(f"[{number}] (source: {source})\n{chunk.text}")
     return "\n\n".join(blocks)
 

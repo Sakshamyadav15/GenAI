@@ -1,0 +1,38 @@
+{
+  "corpus_note": "Sample questions over the 8 prototype Acts (Constitution of India, BNS 2023, BNSS 2023, BSA 2023, IPC 1860, CrPC 1973, Evidence Act 1872, Consumer Protection Act 2019).",
+  "questions": [
+    {
+      "category": "simple",
+      "question": "What does Article 21 of the Constitution of India protect?"
+    },
+    {
+      "category": "simple",
+      "question": "What is the punishment for murder under the Bharatiya Nyaya Sanhita, 2023?"
+    },
+    {
+      "category": "moderate",
+      "question": "Which freedoms are guaranteed to citizens under Article 19 of the Constitution of India?"
+    },
+    {
+      "category": "moderate",
+      "question": "In what circumstances can a police officer arrest a person without a warrant under the Bharatiya Nagarik Suraksha Sanhita, 2023?"
+    },
+    {
+      "category": "moderate",
+      "question": "When is an electronic record admissible as evidence under the Bharatiya Sakshya Adhiniyam, 2023?"
+    },
+    {
+      "category": "moderate",
+      "question": "What remedies can a District Consumer Disputes Redressal Commission give under the Consumer Protection Act, 2019?"
+    },
+    {
+      "category": "complex",
+      "question": "Which article of the Constitution allows a person to approach the Supreme Court to enforce fundamental rights, and which article gives the High Courts a similar power?"
+    },
+    {
+      "category": "unanswerable",
+      "question": "What is the Supreme Court's current view on whether the right to privacy is a fundamental right?"
+    }
+  ],
+  "selection_note": "These 8 questions were written before any run and were not filtered by the results. Sample answers are real recorded runs shown as saved samples; any other question is answered live. A question can only be answered from an Act that has been indexed: at the moment only the Constitution of India (and the RTI Act) are, so the questions about the other Acts run live and will say the provided texts do not contain the answer until those Acts are added. The system answers from statute text only (no case law)."
+}

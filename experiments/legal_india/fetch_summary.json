@@ -1,0 +1,18 @@
+{
+  "sampled": 200,
+  "written": 199,
+  "no_text": 0,
+  "extract_error": 0,
+  "numbered": 167,
+  "blank_line": 32,
+  "failures": 1,
+  "download_mb": 65.6,
+  "paragraphs_mean": 27.2,
+  "paragraphs_median": 21,
+  "failure_list": [
+    [
+      "2023_3_30_compressed",
+      "download: HTTPError: HTTP Error 404: Not Found"
+    ]
+  ]
+}

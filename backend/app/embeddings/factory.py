@@ -7,6 +7,10 @@ from app.core.llm import MISSING_KEY_MESSAGE
 
 
 def create_embeddings(settings: Settings) -> Embeddings:
+    if settings.embedding_provider == "local":
+        from app.embeddings.local import LocalEmbeddings
+
+        return LocalEmbeddings(settings.local_embedding_model, device=settings.nli_device)
     if not settings.llm_configured:
         raise LLMNotConfiguredError(MISSING_KEY_MESSAGE)
     return OpenAIEmbeddings(

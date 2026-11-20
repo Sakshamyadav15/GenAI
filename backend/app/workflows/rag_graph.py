@@ -35,7 +35,14 @@ from app.generation.prompts import Revision
 from app.retrieval.adaptive_retriever import AdaptiveRetrievalState, AdaptiveRetriever, FusedHit, assess_confidence
 from app.retrieval.complexity_classifier import ComplexityClassifier
 from app.retrieval.dense import DenseRetriever, RetrievalResult
-from app.schemas.pipeline import ComplexityAssessment, RefinementStep, RetrievalConfidence, SupportStatus
+from app.schemas.pipeline import (
+    BudgetReport,
+    ComplexityAssessment,
+    RefinementStep,
+    RetrievalConfidence,
+    SupportStatus,
+    Uncertainty,
+)
 from app.schemas.query import AttemptSummary, PipelineName, QueryResponse, RetrievalTrace, RetrievedChunk
 from app.verification.claim_extractor import Claim, ClaimExtractor
 from app.verification.finalize import (
@@ -46,6 +53,7 @@ from app.verification.finalize import (
     strip_unsupported,
 )
 from app.verification.verifier import EvidenceVerifier
+from app.workflows.budget import ceiling, regeneration_cost, verification_cost, would_exceed
 from app.workflows.common import build_citations, build_sentences, to_retrieved_chunks
 
 RECURSION_LIMIT = 60
@@ -83,6 +91,9 @@ class GraphState(TypedDict, total=False):
     claims: list[Claim]
     claims_fallback: bool
     refinements: list[RefinementStep]
+    budget_skipped: list[str]
+    skip_verification: bool
+    stop_retries: bool
     response: QueryResponse
 
 
@@ -108,6 +119,7 @@ def _fused_to_chunks(selected: list[FusedHit]) -> list[RetrievedChunk]:
                 rank=rank,
                 citation_number=rank,
                 retrieved_by="original_query" if fused.query_index == 0 else f"sub_query:{fused.query_index}",
+                section_label=hit.chunk.section_label,
             )
         )
     return chunks
@@ -146,7 +158,8 @@ class ProposedRAGPipeline:
         graph.add_conditional_edges("assess_confidence", self._route_confidence, ["expand_retrieval", "generate"])
         graph.add_edge("expand_retrieval", "assess_confidence")
         graph.add_conditional_edges(
-            "generate", lambda s: "extract_claims" if s["config"].proposed.verify else "finalize",
+            "generate",
+            lambda s: "extract_claims" if s["config"].proposed.verify and not s.get("skip_verification") else "finalize",
             ["extract_claims", "finalize"],
         )
         graph.add_edge("extract_claims", "verify")
@@ -178,6 +191,9 @@ class ProposedRAGPipeline:
             "claims": [],
             "claims_fallback": False,
             "refinements": [],
+            "budget_skipped": [],
+            "skip_verification": False,
+            "stop_retries": False,
         }
         async for update in self._graph.astream(dict(state), stream_mode="updates", config={"recursion_limit": RECURSION_LIMIT}):
             for node, delta in update.items():
@@ -272,7 +288,13 @@ class ProposedRAGPipeline:
             cumulative_cost_usd=None,
         )
         update: dict[str, Any] = {"attempt_started": started, "timings": _with_timing(state, "generation", started)}
-        if not config.proposed.verify:
+        if config.proposed.verify and would_exceed(
+            config, usage, verification_cost(config, self.c.generator.model_name, generation.answer)
+        ):
+            # The optional verification step would cross the per-query cost ceiling: skip it and say so.
+            update["skip_verification"] = True
+            update["budget_skipped"] = [*state.get("budget_skipped", []), "claim verification"]
+        if not config.proposed.verify or update.get("skip_verification"):
             attempt = self._close_attempt(state, attempt, started)
         update["attempts"] = [*state["attempts"], attempt]
         return update
@@ -284,7 +306,7 @@ class ProposedRAGPipeline:
         (claims, fallback), _ = await asyncio.gather(
             self.c.extractor.extract(
                 attempt.sentences, max_claims=config.max_claims, max_tokens=config.max_tokens,
-                usage=state["usage"], attempt=attempt.attempt,
+                usage=state["usage"], attempt=attempt.attempt, use_llm=config.llm_claims,
             ),
             self.c.verifier.prefetch(state["chunks"], config, state["usage"], state["embedding_cache"]),
         )
@@ -301,13 +323,24 @@ class ProposedRAGPipeline:
             update={"verification": report, "sentences": annotate_sentences(attempt.sentences, report)}
         )
         attempt = self._close_attempt(state, attempt, state["attempt_started"])
-        return {"attempts": [*state["attempts"][:-1], attempt], "timings": _with_timing(state, "verification", started)}
+        update: dict[str, Any] = {
+            "attempts": [*state["attempts"][:-1], attempt],
+            "timings": _with_timing(state, "verification", started),
+        }
+        config = state["config"]
+        retries_left = len(state["attempts"]) - 1 < config.verification.max_retries
+        if not report.passed and retries_left and would_exceed(
+            config, state["usage"], regeneration_cost(config, self.c.generator.model_name, state["usage"], attempt.answer)
+        ):
+            update["stop_retries"] = True
+            update["budget_skipped"] = [*state.get("budget_skipped", []), "retry"]
+        return update
 
     def _route_verification(self, state: GraphState) -> str:
         report = state["attempts"][-1].verification
         assert report is not None
         retries_used = len(state["attempts"]) - 1
-        if report.passed or retries_used >= state["config"].verification.max_retries:
+        if report.passed or state.get("stop_retries") or retries_used >= state["config"].verification.max_retries:
             return "finalize"
         return "refine"
 
@@ -342,6 +375,7 @@ class ProposedRAGPipeline:
                             page=hit.chunk.page, chunk_index=hit.chunk.chunk_index, text=hit.chunk.text,
                             score=hit.score, rank=number, citation_number=number,
                             retrieved_by=f"refinement:{attempt.attempt + 1}",
+                            section_label=hit.chunk.section_label,
                         )
                     )
 
@@ -375,7 +409,7 @@ class ProposedRAGPipeline:
 
     async def _finalize(self, state: GraphState) -> dict[str, Any]:
         config, attempts, chunks = state["config"], state["attempts"], state["chunks"]
-        verify = config.proposed.verify
+        verify = config.proposed.verify and not state.get("skip_verification")
         index = select_best_attempt(attempts) if verify else len(attempts) - 1
         chosen = attempts[index]
         report = chosen.verification
@@ -388,7 +422,23 @@ class ProposedRAGPipeline:
                 sentences = []
         else:
             answer, uncertainty, sentences = chosen.answer, None, chosen.sentences
+            if state.get("skip_verification"):
+                uncertainty = Uncertainty(
+                    flagged=True,
+                    notice="Claim verification was skipped to stay within the per-question cost limit; "
+                    "check every citation against the cited provision.",
+                    unsupported_claims=[],
+                    removed_sentences=[],
+                )
         parsed = parse_citations(answer, len(chunks))
+        limit = ceiling(config)
+        budget = (
+            BudgetReport(
+                ceiling_usd=limit, spent_usd=round(state["usage"].spent_usd(), 6), skipped_steps=state.get("budget_skipped", [])
+            )
+            if limit is not None
+            else None
+        )
 
         timings = dict(state.get("timings", {}))
         timings["total"] = (perf_counter() - state["started"]) * 1000
@@ -446,6 +496,7 @@ class ProposedRAGPipeline:
             selected_attempt=index,
             refinements=state["refinements"],
             uncertainty=uncertainty,
+            budget=budget,
             usage=usage,
             timings_ms=timings,
             total_latency_ms=timings["total"],

@@ -13,7 +13,16 @@ export const toneStyles: Record<string, string> = {
   neutral: 'bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200',
   info: 'bg-indigo-50 text-indigo-800 ring-1 ring-inset ring-indigo-200',
   violet: 'bg-violet-50 text-violet-800 ring-1 ring-inset ring-violet-200',
+  gold: 'bg-gold-50 text-gold-700 ring-1 ring-inset ring-gold-400/60',
 };
+
+/** Verification statuses in the vocabulary a legal reader expects. */
+export const legalStatus: Record<string, string> = {
+  supported: 'Supported by authority',
+  partial: 'Partly supported',
+  unsupported: 'Not supported',
+};
+export const legalStatusLabel = (s: string | null | undefined) => (s && legalStatus[s]) || s || '';
 
 export function statusTone(s: Status | string | null | undefined): string {
   return s && statusStyles[s] ? s : 'neutral';
@@ -31,7 +40,7 @@ export function PageHeader({ title, subtitle, right }: { title: string; subtitle
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{title}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-indigo-900">{title}</h1>
         {subtitle && <p className="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600">{subtitle}</p>}
       </div>
       {right}
@@ -51,10 +60,10 @@ export function Card({
   className?: string;
 }) {
   return (
-    <section className={`rounded-xl border border-slate-200 bg-white p-5 ${className}`}>
+    <section className={`rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_0_rgba(14,32,64,0.04)] ${className}`}>
       {(title || right) && (
         <div className="mb-4 flex items-center justify-between gap-2">
-          <h2 className="text-sm font-semibold text-slate-800">{title}</h2>
+          <h2 className="text-base font-semibold text-slate-900">{title}</h2>
           {right}
         </div>
       )}
@@ -65,7 +74,7 @@ export function Card({
 
 export function Stat({ label, value, hint }: { label: string; value: ReactNode; hint?: ReactNode }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+    <div className="rounded-lg border border-slate-200 bg-ivory p-3">
       <div className="text-xs text-slate-500">{label}</div>
       <div className="mt-0.5 text-lg font-semibold text-slate-900">{value}</div>
       {hint && <div className="mt-0.5 text-xs text-slate-500">{hint}</div>}
@@ -141,10 +150,11 @@ export function InfoTip({ children }: { children: ReactNode }) {
 }
 
 export const btnPrimary =
-  'rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50';
+  'rounded-lg bg-indigo-700 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-800 disabled:cursor-not-allowed disabled:opacity-50';
 export const inputBase =
   'w-full rounded-lg border border-slate-300 bg-white p-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500';
 
 export const ms = (v: number) => (v >= 1000 ? `${(v / 1000).toFixed(1)} s` : `${Math.round(v)} ms`);
 export const num = (v: number, digits = 3) => v.toFixed(digits);
-export const sourceLabel = (filename: string, page: number | null) => (page == null ? filename : `${filename}, p. ${page}`);
+export const sourceLabel = (filename: string, page: number | null, label?: string | null) =>
+  label || (page == null ? filename : `${filename}, p. ${page}`);

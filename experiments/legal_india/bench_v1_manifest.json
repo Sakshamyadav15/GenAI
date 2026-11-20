@@ -1,0 +1,59 @@
+{
+ "created_at": "2026-11-04T05:57:23.091167+00:00",
+ "seed": 13,
+ "generator_model": "gpt-4.1",
+ "near_paragraph_filter_model": "gpt-4.1-mini",
+ "embedding_model": "text-embedding-3-small",
+ "temperature": 0.0,
+ "corpus": "experiments/legal_india/sample_corpus.jsonl (199 Supreme Court judgments, 2023-2024)",
+ "n_items": 432,
+ "counts_by_split_and_type": {
+  "dev/altered_quote": 8,
+  "dev/fabricated_case": 8,
+  "dev/near_paragraph": 7,
+  "dev/none": 32,
+  "dev/overbroad_holding": 8,
+  "dev/swapped_party_or_outcome": 5,
+  "dev/wrong_code": 13,
+  "dev/wrong_paragraph": 8,
+  "test/altered_quote": 42,
+  "test/fabricated_case": 42,
+  "test/near_paragraph": 38,
+  "test/none": 111,
+  "test/overbroad_holding": 23,
+  "test/swapped_party_or_outcome": 33,
+  "test/wrong_code": 12,
+  "test/wrong_paragraph": 42
+ },
+ "generation_stats": {
+  "rejected": {
+   "near_too_similar": 37,
+   "near_candidate_supports_claim": 66,
+   "near_all_candidates_support": 5,
+   "conditional_quote": 37,
+   "conditional_empty": 2,
+   "overbroad": 94,
+   "overbroad_still_supported": 75,
+   "swap": 12,
+   "paraphrase": 3
+  },
+  "errors": 0,
+  "attempted_bases": 50,
+  "bases": {
+   "attempted": 121,
+   "rejected_empty": 4,
+   "rejected_quote": 8,
+   "rejected_phrase": 0,
+   "rejected_alter": 0,
+   "errors": 0,
+   "notes": []
+  }
+ },
+ "usage": {
+  "input_tokens": 702050,
+  "output_tokens": 58971,
+  "cost_usd": 1.0049105199999993
+ },
+ "not_built": "wrong_court_binding: all corpus judgments are Supreme Court judgments, so no High Court or bench-strength mismatch is derivable from metadata",
+ "label_note": "labels are automatic by construction (mechanical checks per type); not validated by lawyers"
+}

@@ -15,10 +15,10 @@ export default function History() {
   if (error) return <ErrorBox message={error} />;
   return (
     <div className="space-y-6">
-    <PageHeader title="History" subtitle="Every question answered so far, with the complexity label, retrieval depth, and latency that were logged for it." />
+    <PageHeader title="History" subtitle="Every research question answered so far, with the complexity label, retrieval depth and latency logged for it." />
     <Card>
       {logs === null && <SkeletonCard lines={4} />}
-      {logs && logs.length === 0 && <Empty>No queries yet. Ask a question in Chat and it will be logged here.</Empty>}
+      {logs && logs.length === 0 && <Empty>No research questions yet. Ask one under Research and it will be logged here.</Empty>}
       {logs && logs.length > 0 && (
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">

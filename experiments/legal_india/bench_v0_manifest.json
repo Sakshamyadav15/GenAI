@@ -1,0 +1,37 @@
+{
+ "created_at": "2026-11-03T10:30:43.257279+00:00",
+ "seed": 13,
+ "model": "gpt-4o-mini",
+ "temperature": 0.0,
+ "corpus": "experiments/legal_india/sample_corpus.jsonl (199 Supreme Court judgments, 2023-2024)",
+ "n_items": 286,
+ "counts_by_split_and_type": {
+  "dev/altered_quote": 15,
+  "dev/fabricated_case": 15,
+  "dev/none": 18,
+  "dev/wrong_case": 15,
+  "dev/wrong_code": 4,
+  "dev/wrong_paragraph": 15,
+  "test/altered_quote": 35,
+  "test/fabricated_case": 35,
+  "test/none": 44,
+  "test/wrong_case": 35,
+  "test/wrong_code": 20,
+  "test/wrong_paragraph": 35
+ },
+ "generation_stats": {
+  "attempted": 121,
+  "rejected_empty": 2,
+  "rejected_quote": 10,
+  "rejected_phrase": 9,
+  "rejected_alter": 0,
+  "errors": 0,
+  "notes": []
+ },
+ "usage": {
+  "input_tokens": 53786,
+  "output_tokens": 11929,
+  "cost_usd": 0.0152253
+ },
+ "label_note": "labels are automatic by construction; not validated by lawyers"
+}

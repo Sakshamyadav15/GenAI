@@ -12,6 +12,7 @@ from app.api import documents, experiments, query, system
 from app.core.config import Settings, get_settings
 from app.core.container import build_container
 from app.core.errors import AppError
+from app.core.llm import is_rate_limit
 from app.core.logging import configure_logging
 from app.seed import seed_demo_corpus
 from app.vectorstore.store import VectorStore
@@ -55,6 +56,17 @@ def create_app(
     @app.exception_handler(AppError)
     async def handle_app_error(_: Request, exc: AppError) -> JSONResponse:
         return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
+
+    @app.exception_handler(Exception)
+    async def handle_unexpected(_: Request, exc: Exception) -> JSONResponse:
+        if is_rate_limit(exc):
+            logger.warning("LLM rate limit reached: %s", type(exc).__name__)
+            return JSONResponse(
+                status_code=429,
+                content={"detail": "The language-model provider's rate limit or daily quota is exhausted. Try again later."},
+            )
+        logger.exception("Unhandled error")
+        return JSONResponse(status_code=500, content={"detail": "Internal server error"})
 
     app.include_router(system.router)
     app.include_router(documents.router)

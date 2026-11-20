@@ -10,6 +10,7 @@ from fastapi.responses import StreamingResponse
 from app.api.deps import get_container
 from app.core.container import ServiceContainer
 from app.core.errors import AppError
+from app.core.llm import is_rate_limit
 from app.schemas.query import PipelineName, QueryLogSummary, QueryRequest, QueryResponse
 
 logger = logging.getLogger(__name__)
@@ -53,9 +54,14 @@ async def stream_query(request: QueryRequest, container: Container) -> Streaming
                 yield _sse(event)
         except AppError as exc:
             yield _sse({"type": "error", "detail": exc.message})
-        except Exception:  # noqa: BLE001 - the client must learn that the stream failed
+        except Exception as exc:  # noqa: BLE001 - the client must learn that the stream failed
             logger.exception("Streaming query failed")
-            yield _sse({"type": "error", "detail": "Internal error while answering the question"})
+            detail = (
+                "The language-model provider's rate limit or daily quota is exhausted. Try again later."
+                if is_rate_limit(exc)
+                else "Internal error while answering the question"
+            )
+            yield _sse({"type": "error", "detail": detail})
 
     return StreamingResponse(
         body(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"}

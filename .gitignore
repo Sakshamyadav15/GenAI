@@ -35,3 +35,20 @@ CLAUDE.md
 # Large raw benchmark downloads (re-created by the dataset preparation script)
 experiments/datasets/raw/
 experiments/cache/
+
+# Indian legal sample data (raw downloads and extracted full text are never committed)
+experiments/legal_india/raw/
+experiments/legal_india/sample_corpus.jsonl
+
+# Legal benchmark items contain judgment quotes; redistribution licence unconfirmed
+experiments/legal_india/bench_v0.jsonl
+experiments/legal_india/sample_corpus.jsonl
+experiments/legal_india/decisions_baselines.json
+experiments/legal_india/bench_v1.jsonl
+experiments/legal_india/bench_v1_pilot.jsonl
+experiments/legal_india/decisions_baselines_v1.json
+experiments/legal_india/nli_cache_v1.json
+experiments/legal_india/decisions_b1_v1_test.json
+
+# Indian-Acts instance data (downloaded PDFs, vector index, database)
+backend/data_legal/

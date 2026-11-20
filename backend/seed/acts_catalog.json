@@ -1,0 +1,71 @@
+{
+  "_note": "An Act is fetched automatically only when `url` is set; every URL here was checked to return a PDF whose first page names the Act. For all other Acts, download the official PDF yourself (India Code https://www.indiacode.nic.in, legislative.gov.in or the relevant ministry) and save it as backend/data_legal/raw/<slug>.pdf. Nothing is bypassed or guessed. Verify texts against the official gazette before relying on them.",
+  "acts": [
+    {
+      "slug": "constitution_of_india",
+      "name": "Constitution of India",
+      "kind": "constitution",
+      "url": "https://cdnbbsr.s3waas.gov.in/s380537a945c7aaa788ccfcdf1b99b5d8f/uploads/2024/07/20240716890312078.pdf",
+      "source": "Legislative Department, Ministry of Law and Justice (as on 1 May 2024; bilingual PDF, English text used)",
+      "verified": "2026-11-04 (402 pages, title confirmed)"
+    },
+    {
+      "slug": "right_to_information_act_2005",
+      "name": "Right to Information Act, 2005",
+      "kind": "act",
+      "url": "https://www.heavyindustries.gov.in/sites/default/files/2023-10/rti_act_2005.pdf",
+      "source": "Ministry of Heavy Industries website copy, last updated 17-5-2021",
+      "verified": "2026-11-04 (22 pages, title confirmed)"
+    },
+    {
+      "slug": "bharatiya_nyaya_sanhita_2023",
+      "name": "Bharatiya Nyaya Sanhita, 2023",
+      "kind": "act",
+      "url": null,
+      "source": "download manually (India Code Act 45 of 2023)"
+    },
+    {
+      "slug": "bharatiya_nagarik_suraksha_sanhita_2023",
+      "name": "Bharatiya Nagarik Suraksha Sanhita, 2023",
+      "kind": "act",
+      "url": null,
+      "source": "download manually (India Code Act 46 of 2023)"
+    },
+    {
+      "slug": "bharatiya_sakshya_adhiniyam_2023",
+      "name": "Bharatiya Sakshya Adhiniyam, 2023",
+      "kind": "act",
+      "url": null,
+      "source": "download manually (India Code Act 47 of 2023)"
+    },
+    {
+      "slug": "indian_penal_code_1860",
+      "name": "Indian Penal Code, 1860",
+      "kind": "act",
+      "url": null,
+      "source": "download manually"
+    },
+    {
+      "slug": "code_of_criminal_procedure_1973",
+      "name": "Code of Criminal Procedure, 1973",
+      "kind": "act",
+      "url": null,
+      "source": "download manually"
+    },
+    {
+      "slug": "indian_evidence_act_1872",
+      "name": "Indian Evidence Act, 1872",
+      "kind": "act",
+      "url": null,
+      "source": "download manually"
+    },
+    {
+      "slug": "consumer_protection_act_2019",
+      "name": "Consumer Protection Act, 2019",
+      "kind": "act",
+      "url": null,
+      "source": "download manually"
+    }
+  ],
+  "_scope": "Prototype scope: the 8 Acts Constitution of India, BNS 2023, BNSS 2023, BSA 2023, IPC 1860, CrPC 1973, Indian Evidence Act 1872 and Consumer Protection Act 2019, plus the RTI Act 2005 as a bonus because it could be fetched with a verified URL. Only entries with a `url` are downloaded automatically."
+}

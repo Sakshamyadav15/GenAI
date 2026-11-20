@@ -1,0 +1,6 @@
+# Extra dependency for backend/scripts/legal_india_fetch.py
+pyarrow==26.0.0
+
+# Indian-Acts instance (local embeddings and Gemini chat)
+sentence-transformers
+langchain-google-genai

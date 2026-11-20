@@ -33,6 +33,7 @@ const json = (body: unknown): RequestInit => ({
 });
 
 export const api = {
+  config: () => request<{ instance_mode?: string; budget_mode?: boolean }>('/api/config'),
   health: () => request<{ status: string; llm_configured: boolean; nli_models: Record<string, string> }>('/api/health'),
   demoQuestions: () =>
     request<{ questions: { category: string; question: string; featured?: boolean }[]; selection_note?: string }>('/api/demo/questions'),

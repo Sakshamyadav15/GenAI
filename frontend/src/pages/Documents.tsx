@@ -46,8 +46,8 @@ export default function Documents() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Documents" subtitle="The knowledge base the system answers from. Upload PDF, DOCX, TXT or Markdown files; they are cleaned, split into chunks, embedded and indexed. A few synthetic demo documents are pre-loaded." />
-      <Card title="Upload documents">
+      <PageHeader title="Case file and authorities" subtitle="The material the system researches from: judgments, statutes, briefs and notes. Upload PDF, DOCX, TXT or Markdown files; they are cleaned, split into passages and indexed. Three synthetic demonstration documents (not real law) are pre-loaded." />
+      <Card title="Add authorities to the case file">
         <label
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => {
@@ -56,7 +56,7 @@ export default function Documents() {
           }}
           className="flex cursor-pointer flex-col items-center gap-1 rounded-lg border-2 border-dashed border-slate-300 p-8 text-sm text-slate-500 hover:border-indigo-500 hover:bg-indigo-50/40"
         >
-          <span>{busy ? `Indexing ${busy}…` : 'Drop PDF, DOCX, TXT or Markdown files here, or click to choose'}</span>
+          <span>{busy ? `Indexing ${busy}…` : 'Drop judgments, statutes or briefs here (PDF, DOCX, TXT, Markdown), or click to choose'}</span>
           <input
             ref={input}
             type="file"
@@ -74,11 +74,11 @@ export default function Documents() {
         )}
       </Card>
 
-      <Card title={`Indexed documents (${docs.length})`}>
+      <Card title={`Authorities in the case file (${docs.length})`}>
         {!loaded ? (
           <SkeletonCard lines={3} />
         ) : docs.length === 0 ? (
-          <Empty>No documents yet. Drop a file above to index it.</Empty>
+          <Empty>The case file is empty. Add a judgment, statute or brief above to research from it.</Empty>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
@@ -88,7 +88,7 @@ export default function Documents() {
                   <th>Type</th>
                   <th>Size</th>
                   <th>Pages</th>
-                  <th>Chunks</th>
+                  <th>Passages</th>
                   <th>Chunking</th>
                   <th>Status</th>
                   <th />
